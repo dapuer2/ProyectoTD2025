@@ -9,4 +9,21 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## 1. Introducción
+
+Este proyecto se centra en realizar un análisis detallado de los tickets
+electrónicos proporcionados por Mercadona, una reconocida cadena de
+supermercados en España. Estos tickets electrónicos son enviados a los
+usuarios a través del correo electrónico en formato PDF.
+
+Los datos utilizados en este análisis provienen de los tickets
+electrónicos implementados por Mercadona. Estos documentos contienen
+información detallada sobre las transacciones de compra realizadas en
+sus establecimientos.
+
+El objetivo principal es examinar a fondo estos tickets electrónicos
+para obtener información valiosa sobre los hábitos de compra en
+Mercadona. Específicamente, se enfocarán en identificar las compras más
+comunes, los supermercados más visitados, los productos más populares y
+que localidad tiene mayor número de tickets entre otras cosas.
+
