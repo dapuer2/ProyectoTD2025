@@ -27,3 +27,16 @@ Mercadona. Específicamente, se enfocarán en identificar las compras más
 comunes, los supermercados más visitados, los productos más populares y
 que localidad tiene mayor número de tickets entre otras cosas.
 
+## Librerias 
+
+Las librerias que vamos a usar
+```{r}
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+library(pdftools)
+library(tidyverse)
+library(readr)
+
+```
+
