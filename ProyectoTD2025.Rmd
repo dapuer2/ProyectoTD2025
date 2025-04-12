@@ -1,8 +1,53 @@
 ---
-title: "ProyectoTD2025"
+title: "ProyectoTD2025    -    Grupo C"
 author: "David Puertes Santonja"
 date: "2025-04-08"
-output: html_document
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 5
+    number_sections: false
+  html_notebook:
+    echo: true
+    number_sections: true
+    toc: true
+  bookdown::pdf_document2:
+    toc: true
+    toc_depth: 5
+    number_sections: false
+  html_document:
+    echo: true
+    number_sections: false
+    theme: lumen
+    toc: true
+  bookdown::html_document2:
+    echo: true
+    number_sections: false
+    theme: spacelab
+    toc: true
+always_allow_html: true
+params:
+  lang: ES
+lang: "`r switch(params$lang, ES = 'es-ES', EN = 'en-US')`"
+subtitle: "Tratamiento de Datos. Grado en Ciencia de Datos- UV"
+language:
+  label:
+    fig: 'Figura '
+    tab: 'Tabla '
+    eq: 'Ecuación '
+    thm: 'Teorema '
+    lem: 'Lema '
+    def: 'Definición '
+    cor: 'Corolario '
+    prp: 'Proposición '
+    exm: 'Ejemplo '
+    exr: 'Ejercicio '
+    proof: 'Demostración. '
+    remark: 'Nota: '
+    solution: 'Solución. '
+editor_options:
+  markdown:
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
