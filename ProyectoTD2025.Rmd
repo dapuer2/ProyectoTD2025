@@ -332,5 +332,6 @@ knitr::kable(
 ) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
 
+# La tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
 ```
 
