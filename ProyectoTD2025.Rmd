@@ -241,6 +241,45 @@ precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio 
   df.ticket <- bind_rows(df.ticket, fila)
 }
 
+# Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
+
+## TABLA 1: Resumen general de variables
+resumen_variable <- function(var) {
+  tipo <- class(var)[1]
+  n_na <- sum(is.na(var))
+  miss_frac <- round(mean(is.na(var)), 4)
+
+  if (is.factor(var) || is.character(var)) {
+    niveles <- length(unique(var))
+    top <- names(sort(table(var), decreasing = TRUE))[1]
+    top_count <- max(table(var))
+    top_frac <- round(top_count / length(var), 4)
+  } else {
+    niveles <- NA
+    top <- NA
+    top_count <- NA
+    top_frac <- NA
+  }
+
+  tibble(
+    tipo = tipo,
+    niveles = niveles,
+    topLevel = top,
+    topCount = top_count,
+    topFrac = top_frac,
+    missFrac = miss_frac
+  )
+}
+
+resumen <- bind_rows(lapply(df.ticket, resumen_variable), .id = "Variable")
+
+knitr::kable(
+  resumen,
+  caption = "Tabla 1. Resumen general de las variables del conjunto de tickets.",
+  digits = 4
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
 
 ```
 
