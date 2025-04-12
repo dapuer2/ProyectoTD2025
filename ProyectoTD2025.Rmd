@@ -280,7 +280,7 @@ knitr::kable(
 ) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
 
-
+# La tabla 1 presenta un resumen de las variables contenidas en df.ticket, indicando el tipo, número de niveles (si corresponde), valor más frecuente, su frecuencia relativa y la fracción de valores perdidos.
 ```
 
 ```{r}
