@@ -283,3 +283,31 @@ knitr::kable(
 
 ```
 
+```{r}
+## TABLA 2: Estadísticos de variables numéricas
+numericas <- df.ticket %>%
+  select(where(is.numeric)) %>%
+  summarise(across(
+    everything(),
+    list(
+      Media = mean,
+      Mediana = median,
+      DesvEst = sd,
+      Min = min,
+      Max = max
+    ),
+    na.rm = TRUE
+  )) %>%
+  pivot_longer(cols = everything(),
+               names_to = c("Variable", ".value"),
+               names_sep = "_")
+
+knitr::kable(
+  numericas,
+  caption = "Tabla 2. Estadísticos descriptivos de las variables numéricas.",
+  digits = 2
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
+```
+
