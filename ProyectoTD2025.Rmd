@@ -40,3 +40,22 @@ library(readr)
 
 ```
 
+## Importación de datos 
+```{r}
+# Obtener todos los archivos PDF dentro de la carpeta 'data'
+archivos_pdf <- list.files("data", pattern = "\\.pdf$", full.names = TRUE)
+
+# Leer todos los PDFs y guardarlos en una lista
+tickets <- lapply(archivos_pdf, pdf_text)
+
+# Opcional: dividir cada ticket en líneas
+tickets_lineas <- lapply(tickets, function(ticket) {
+  lineas<-unlist(strsplit(ticket, "\n"))
+  lineas[lineas != ""]
+})
+
+# Mostrar el contenido del primer ticket, por ejemplo
+tickets_lineas[[2]][]
+
+```
+
