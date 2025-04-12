@@ -79,5 +79,123 @@ elementos.carpeta <- list.files(path = rutadatos,
 
 ```
 
+### 1.2.2 Recopilación de los datos
 
+Una vez que todos los tickets han sido recolectados y transformados en
+texto plano, es momento de almacenar la información contenida en ellos.
+
+
+-   ***df.ticket***: Este data frame recopila la información general de
+    cada ticket.
+
+
+#### 1.2.2.1 Recogida de datos generales del ticket
+
+
+
+##### Importación
+
+```{r echo=FALSE}
+
+# Creamos el dataframe más general que contiene la información individual de
+# cada ticket
+df.ticket <- data.frame()
+
+for (d in elementos.carpeta) {
+  
+  contenido <- readLines(d,
+                         encoding = 'latin1',
+                         warn = FALSE)
+  
+  # Dirección, Ciudad y Código Postal 
+  direccion <- contenido[2]
+  
+  linea3 <- unlist(strsplit(contenido[3], "\\s+"))
+  cp <- linea3[1]
+  provincia <- linea3[2]
+  
+  # Teléfono (ahora en línea 5)
+  telefono <- gsub(".*: ", "", contenido[5])
+  
+  # Fecha, hora y número de operación 
+  linea6 <- unlist(strsplit(contenido[6], " "))
+  fecha_compra <- linea6[1]
+  hora_compra <- linea6[2]
+  num_operacion <- gsub("OP: ", "", contenido[7])
+  
+  # Número de factura simplificada (línea 8)
+  num_factura_simpl <- gsub("FACTURA SIMPLIFICADA: ", "", contenido[8])
+  
+
+  # Precio total y precio sin IVA 
+# Precio total y precio sin IVA 
+  # Precio total y precio sin IVA 
+patron2 <- "TOTAL"
+pos <- grep(patron2, contenido)[1]  # Busca la línea que contiene "TOTAL"
+precio_total <- contenido[pos + 1]  # El precio total está en la línea siguiente
+precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio a numérico
+
+  
+  # Buscar todas las apariciones del patrón "TOTAL"
+  patron2 <- "TOTAL"
+  pos_totales <- grep(patron2, contenido)
+
+  # Precio total (sin IVA) está en la segunda coincidencia de   "TOTAL"
+  precio_total_sin_iva <- contenido[pos_totales[2] + 1]  # El precio está en la siguiente línea
+  precio_total_sin_iva <- as.numeric(gsub(",", ".", x =precio_total_sin_iva)) 
+  
+  iva_anyadido <- contenido[pos_totales[2] + 2]  # El precio está en la siguiente línea
+  iva_anyadido <- as.numeric(gsub(",", ".", x =iva_anyadido))  
+
+  
+  # Detalles de la autorización 
+  patronNC <- "N\\.C"
+  posNC <- grep(patronNC, contenido)[1]
+  nc <- gsub("N.C: ", "", unlist(strsplit( contenido[posNC], " " ))[2])
+  aut <- unlist(strsplit( contenido[posNC+1], " " ))[3] 
+  aid <- unlist(strsplit( contenido[posNC+1], " " ))[4]
+  arc <- unlist(strsplit( contenido[posNC+2], " " ))[2]
+  
+  # Tipo de tarjeta y método de pago
+  autor_trans <- contenido[posNC+3]
+  # Buscamos el método de pago 
+  patron_metodo_pago <- "TARJETA BANCARIA|Mastercard|Visa"
+  pos_metodo_pago <- grep(patron_metodo_pago, contenido)
+
+# Si se encuentra un patrón, asignamos el valor del método de pago
+  metodo_pago <- NA
+  if (length(pos_metodo_pago) > 0) {
+    metodo_pago <- contenido[pos_metodo_pago[1]]  # Tomamos la primera   coincidencia
+    metodo_pago <- gsub("TARJETA BANCARIA: ", "", metodo_pago)  #     Eliminar el texto "TARJETA BANCARIA: "
+    metodo_pago <- gsub("MASTERCARD", "MASTERCARD", metodo_pago)  # Si es Mastercard
+    metodo_pago <- gsub("VISA", "VISA", metodo_pago)  # Si es Visa
+}
+
+  
+  # Añadimos las variables al dataframe
+  fila <- data.frame(
+    numero.factura = num_factura_simpl,
+    precio.total = as.numeric(precio_total),
+    precio.total.sin.IVA = as.numeric(precio_total_sin_iva),
+    iva.anyadido = as.numeric(iva_anyadido),
+    direccion = as.factor(direccion),
+    ciudad = as.factor(provincia),
+    codigo.postal = as.factor(cp),
+    telefono = as.character(telefono),
+    fecha = dmy(fecha_compra),
+    hora = hm(hora_compra),
+    tipo.tarjeta = as.factor(autor_trans),
+    metodo.pago = as.factor(metodo_pago),
+    autorizacion.pago = aut,
+    identificacion.aplicacion.pago = arc,
+    autorizacion.transaccion = as.factor(autor_trans),
+    numero.centro = nc,
+    numero.caja = num_operacion
+  )
+  
+  df.ticket <- bind_rows(df.ticket, fila)
+}
+
+
+```
 
