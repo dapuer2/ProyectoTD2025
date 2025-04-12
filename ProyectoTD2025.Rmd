@@ -311,3 +311,25 @@ knitr::kable(
 
 ```
 
+
+```{r}
+## TABLA 3: Frecuencias de variables categóricas clave
+categoricas <- df.ticket %>%
+  select_if(~ is.factor(.) || is.character(.)) %>%
+  select(ciudad, metodo.pago, numero.centro) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable, Valor) %>%
+  summarise(Frecuencia = n(), .groups = "drop") %>%
+  group_by(Variable) %>%
+  arrange(desc(Frecuencia), .by_group = TRUE) %>%
+  slice_head(n = 5)  # top 5 por categoría
+
+knitr::kable(
+  categoricas,
+  caption = "Tabla 3. Frecuencia de los valores más comunes en variables categóricas clave.",
+  digits = 0
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
+```
+
