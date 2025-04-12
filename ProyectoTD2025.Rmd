@@ -27,35 +27,57 @@ Mercadona. Específicamente, se enfocarán en identificar las compras más
 comunes, los supermercados más visitados, los productos más populares y
 que localidad tiene mayor número de tickets entre otras cosas.
 
-## Librerias 
+```{r, echo = FALSE, message=FALSE}
 
-Las librerias que vamos a usar
+if (!require("pacman")) {
+  install.packages("pacman")
+}
+```
+
+```{r, warning=FALSE}
+
+library(pacman)
+
+p_load(
+  bookdown,
+  kableExtra,
+  tidyverse, # Manipulación de datos
+  readr, # Entrada de datos
+  dplyr, # Manipulación de datos
+  tidyr, # Manipulación de datos
+  purrr, # Manipulación de datos
+  lubridate, # Manipulación de datos tipo fecha
+  hrbrthemes, # Visualización de datos
+  arules # Análisis patrones de compra
+  )
+```
+
+## 1.2 Extracción de datos del fichero de texto
+
+### 1.2.1 Recopilación de ficheros .txt
+
+Con el propósito de simplificar el procesamiento de los datos contenidos
+en los tickets de Mercadona, se ha optado por utilizar un código en
+Python que convierte los archivos PDF a archivos de txt.
+
+Todos estos archivos se encuentran almacenados en una carpeta compartida
+designada para este tipo de archivos [./data], a la cual se accede para
+obtener todos los tickets en formato .txt.
+
+Este enfoque permite realizar un análisis línea por línea de cada
+documento de manera eficiente y estructurada.
+
 ```{r}
-library(ggplot2)
-library(lubridate)
-library(dplyr)
-library(pdftools)
-library(tidyverse)
-library(readr)
+
+# Obtenemos todos los ficheros de tipo texto para su siguiente análisis
+rutadatos <- './data'
+extension = '.txt'
+elementos.carpeta <- list.files(path = rutadatos, 
+                                pattern = extension,
+                                full.names = TRUE, 
+                                include.dirs = FALSE)
 
 ```
 
-## Importación de datos 
-```{r}
-# Obtener todos los archivos PDF dentro de la carpeta 'data'
-archivos_pdf <- list.files("data", pattern = "\\.pdf$", full.names = TRUE)
 
-# Leer todos los PDFs y guardarlos en una lista
-tickets <- lapply(archivos_pdf, pdf_text)
-
-# Opcional: dividir cada ticket en líneas
-tickets_lineas <- lapply(tickets, function(ticket) {
-  lineas<-unlist(strsplit(ticket, "\n"))
-  lineas[lineas != ""]
-})
-
-# Mostrar el contenido del primer ticket, por ejemplo
-tickets_lineas[[2]][]
-
-```
 
