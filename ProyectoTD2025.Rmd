@@ -240,7 +240,62 @@ precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio 
   
   df.ticket <- bind_rows(df.ticket, fila)
 }
+```
 
+#### 1.2.2.2 Descripción de las variables del ticket
+
+Las variables creadas y almacenadas para esta tabla con datos más generales es
+la siguiente:
+
+-   ***numero.factura***: Es una variable de tipo texto que identifica
+    unívocamente cada ticket analizado durante el transcurso del
+    análisis.
+-   ***precio.total***: Es una variable de tipo numérico que informa
+    sobre el valor del precio total del ticket
+-   ***precio.total.sin.IVA***: Es una variable de tipo numérico que
+    informa sobre el valor del precio total del ticket, quitando todo el
+    IVA añadido a cada producto.
+-   ***iva.anyadido***: Es una variable de tipo numérico que informa
+    sobre el valor total de IVA añadido a todos los productos.
+-   ***direccion***: Es una variable de tipo categórico que informa
+    sobre la dirección del Mercadona donde se realizó la compra.
+-   ***ciudad***: Es una variable de tipo categórico que informa sobre
+    la ciudad donde se realizó la compra.
+-   ***codigo.postal***: Es una variable de tipo categórico que,
+    análogamente a la ciudad, informa sobre el código postal que tiene
+    la ciudad donde se realizó la compra.
+-   ***telefono***: Es un valor de tipo texto que indica el número de
+    teléfono del Mercadona donde se realizó la compra.
+-   ***fecha***: Es una variable de tipo fecha que indica el día en el
+    que se realizó la compra.
+-   ***hora***: Es una variable de tipo periodo que indica la hora
+    exacta en la que se realizó el pago de la compra.
+-   ***tipo.tarjeta***: Es una variable de tipo categórico que
+    representa las marcas de tarjetas de crédito o débito utilizadas
+    junto con la indicación de VERIFICADO POR DISPOSITIVO, que
+    representa un método adicional de autenticación.
+-   ***metodo.pago***: Es una variable de tipo categórico que representa
+    los diferentes métodos de pago utilizados en las transacciones
+    registradas.
+-   ***autorizacion.pago***: Es una variable de tipo texto que
+    representa la autorización del banco con respecto al pago
+    solicitado.
+-   ***identificacion.aplicacion.pago***: Es una variable de tipo texto
+    que representa la identifficación de la aplicación bancaria
+    utilizada a la hora de realizar el pago.
+-   ***autorizacion.transaccion***: Es una variable de tipo texto que
+    representa el tipo de transacción realizada.
+-   ***numero.centro***: Es una variable de tipo texto que representa el
+    número asociado al centro donde se ha realizado la compra.
+-   ***numero.caja***: Es una variable de tipo texto que representa la
+    caja en la que el usuario ha sido atendido.
+
+Los nombres de las variables son bastante descriptivos pero es necesaria
+una pequeña explicación sobre ellos para en caso de olvidarse o retomar
+el proyecto en un futuro sea fácil su entendimiento y rápida la puesta
+en marcha.
+
+```{r}
 # Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
 
 ## TABLA 1: Resumen general de variables
@@ -281,7 +336,10 @@ knitr::kable(
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
 
 # La tabla 1 presenta un resumen de las variables contenidas en df.ticket, indicando el tipo, número de niveles (si corresponde), valor más frecuente, su frecuencia relativa y la fracción de valores perdidos.
+
 ```
+
+
 
 ```{r}
 ## TABLA 2: Estadísticos de variables numéricas
