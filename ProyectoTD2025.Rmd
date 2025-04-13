@@ -397,21 +397,26 @@ knitr::kable(
 
 Estas son las preguntas que tenemos que responder mediante gráficos.
 
-¿Cuáles son los 5 productos, de los vendidos por unidades, con más ventas ? ¿Cuántas unidades de cada uno se han vendido ?Ç
+  - ¿Cuáles son los 5 productos, de los vendidos por unidades, con más ventas ? ¿Cuántas unidades de        cada uno se han vendido ?Ç
 
-Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son los 5 productos más vendidos ? ¿Cuántos kilos se han vendido de cada uno de estos productos ?
+  - Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son los 5 productos más vendidos ?            ¿Cuántos kilos se han vendido de cada uno de estos productos ?
 
-Si consideramos la categoría de PESCADO. Cuáles son los 5 productos más vendidos ? ¿Cuántos kilos se han vendido de cada uno de estos productos ?
+  - Si consideramos la categoría de PESCADO. Cuáles son los 5 productos más vendidos ? ¿Cuántos kilos se      han vendido de cada uno de estos productos ?
 
-Muestra mediante un gráfico de líneas como ha variado el precio por kilo de las bananas y los plátanos en los tickets disponibles, a lo largo del tiempo.
+  - Muestra mediante un gráfico de líneas como ha variado el precio por kilo de las bananas y los           plátanos en los tickets disponibles, a lo largo del tiempo.
 
-¿ Cuál es la procedencia de los tickets ?¿ Qué ciudad/ pueblo tiene un mayor número de tickets ?
+  - ¿ Cuál es la procedencia de los tickets ?¿ Qué ciudad/ pueblo tiene un mayor número de tickets ?
 
-Muestra mediante un diagrama el número de tickets recogidos cada día de las semana. ¿Si tuvieses que cerrar un día entre semana qué día lo harías ?
+  - Muestra mediante un diagrama el número de tickets recogidos cada día de las semana. ¿Si tuvieses que     cerrar un día entre semana qué día lo harías ?
 
+  - ¿Existe algún patrón en cuanto a la hora del día en que se realizan las compras?
 
+  - ¿Cuánto dinero de media se gastan los compradores?
+   
+  - ¿Cuanto dinero se suele añadir con el IVA?
 
-
-
+  - ¿Cuál es la tienda en la que más se ha comprado ? (Dirección tienda)
+  
+  - ¿Cuál es el alimento comprado más caro?
 
 
