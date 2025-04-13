@@ -1,6 +1,5 @@
 ---
 title: "ProyectoTD2025    -    Grupo C"
-author: "David Puertes Santonja"
 date: "2025-04-08"
 output:
   pdf_document:
@@ -77,9 +76,10 @@ que localidad tiene mayor número de tickets entre otras cosas.
 if (!require("pacman")) {
   install.packages("pacman")
 }
+
 ```
 
-```{r, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE}
 
 library(pacman)
 
@@ -112,7 +112,7 @@ obtener todos los tickets en formato .txt.
 Este enfoque permite realizar un análisis línea por línea de cada
 documento de manera eficiente y estructurada.
 
-```{r}
+```{r, echo = FALSE}
 
 # Obtenemos todos los ficheros de tipo texto para su siguiente análisis
 rutadatos <- './data'
@@ -137,10 +137,9 @@ texto plano, es momento de almacenar la información contenida en ellos.
 #### 1.2.2.1 Recogida de datos generales del ticket
 
 
+Creamos un data.frame con los datos del ticket
 
-##### Importación
-
-```{r echo=FALSE}
+```{r,  echo=FALSE}
 
 # Creamos el dataframe más general que contiene la información individual de
 # cada ticket
@@ -295,7 +294,7 @@ una pequeña explicación sobre ellos para en caso de olvidarse o retomar
 el proyecto en un futuro sea fácil su entendimiento y rápida la puesta
 en marcha.
 
-```{r}
+```{r, echo = FALSE, warning=FALSE}
 # Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
 
 ## TABLA 1: Resumen general de variables
@@ -341,7 +340,7 @@ knitr::kable(
 
 
 
-```{r}
+```{r, echo = FALSE}
 ## TABLA 2: Estadísticos de variables numéricas
 numericas <- df.ticket %>%
   select(where(is.numeric)) %>%
@@ -371,7 +370,7 @@ knitr::kable(
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 ## TABLA 3: Frecuencias de variables categóricas clave
 categoricas <- df.ticket %>%
   select_if(~ is.factor(.) || is.character(.)) %>%
@@ -393,7 +392,7 @@ knitr::kable(
 # La tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
 ```
 
-#### 1.3 PREGUNTAS PROPUESTAS
+## 1.3 Preguntas propuestas
 
 Estas son las preguntas que tenemos que responder mediante gráficos.
 
