@@ -2,10 +2,11 @@
 title: "ProyectoTD2025    -    Grupo C"
 date: "2025-04-08"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   html_notebook:
     echo: true
     number_sections: true
@@ -14,11 +15,10 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -240,6 +240,114 @@ precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio 
   df.ticket <- bind_rows(df.ticket, fila)
 }
 ```
+
+
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
+
+df.productos <- data.frame()
+
+for (d in elementos.carpeta) {
+  
+  contenido <- readLines(d,
+                       encoding = 'latin1',
+                       warn = FALSE)
+  
+  # Extraemos información del ticket
+  num_factura_simpl <- gsub("FACTURA SIMPLIFICADA: ", "", contenido[8])
+  fecha_compra <- dmy(unlist(strsplit(contenido[6], " "))[1])
+  
+  # Identificamos la sección de productos (después de "Importe" y antes de "TOTAL")
+  inicio_productos <- grep("Importe", contenido) + 1
+  fin_productos <- grep("TOTAL \\(â‚¬\\)", contenido) - 1
+  
+  # Si no encontramos el patrón exacto, buscamos alternativas
+  if(length(fin_productos) == 0) {
+    fin_productos <- grep("^TOTAL$", contenido)[1] - 1
+    if(is.na(fin_productos)) {
+      fin_productos <- grep("TARJETA BANCARIA", contenido) - 1
+    }
+  }
+  
+  productos <- contenido[inicio_productos:fin_productos]
+  
+  # Eliminamos líneas de PARKING si existen
+  patron_parking <- "PARKING"
+  lineas_parking <- grep(patron_parking, productos)
+  if(length(lineas_parking) > 0) {
+    productos <- productos[-lineas_parking]
+  }
+  
+  # Eliminamos líneas de DONACIÓN si existen
+  patron_donacion <- "DONACIÃ“N"
+  lineas_donacion <- grep(patron_donacion, productos)
+  if(length(lineas_donacion) > 0) {
+    productos <- productos[-lineas_donacion]
+  }
+  
+  # Procesamos los productos
+  i <- 1
+  while(i <= length(productos)) {
+    # Inicializamos variables
+    cantidad <- NA
+    nombre_producto <- NA
+    precio_producto <- NA
+    
+    # Patrón 1: Cantidad (1 línea), Nombre (1 línea), Precio (1 línea)
+    if(grepl("^\\d+$", productos[i])) {
+      cantidad <- as.numeric(productos[i])
+      nombre_producto <- productos[i+1]
+      precio_producto <- as.numeric(gsub(",", ".", productos[i+2]))
+      i <- i + 3
+    } 
+    # Patrón 2: Línea combinada (cantidad + nombre + precio)
+    else if(grepl("^\\d+ ", productos[i])) {
+      elementos <- unlist(strsplit(productos[i], " "))
+      cantidad <- as.numeric(elementos[1])
+      nombre_producto <- paste(elementos[-length(elementos)][-1], collapse = " ")
+      precio_producto <- as.numeric(gsub(",", ".", elementos[length(elementos)]))
+      i <- i + 1
+    }
+    # Patrón 3: Productos con peso (simplificado - solo tomamos el precio total)
+    else if(grepl("[0-9],", productos[i]) && grepl("€", productos[i+1])) {
+      nombre_producto <- productos[i]
+      datos_peso <- unlist(strsplit(productos[i+1], " "))
+      precio_producto <- as.numeric(gsub(",", ".", datos_peso[5])) # Tomamos el precio total
+      cantidad <- 1  
+      i <- i + 2
+    } 
+    # Si no coincide con ningún patrón, avanzamos
+    else {
+      i <- i + 1
+      next
+    }
+    
+    # Añadimos el producto al dataframe
+    if(!is.na(nombre_producto)) {
+      fila <- data.frame(
+        numero.factura = num_factura_simpl,
+        fecha = fecha_compra,
+        cantidad = as.numeric(cantidad),
+        nombre.producto = nombre_producto,
+        precio.producto = as.numeric(precio_producto),
+        stringsAsFactors = FALSE
+      )
+      df.productos <- bind_rows(df.productos, fila)
+    }
+  }
+}
+
+# Limpieza final de los datos
+df.productos <- df.productos %>%
+  mutate(
+    nombre.producto = gsub("Ã\\u008d", "Í", nombre.producto),
+    nombre.producto = gsub("Ã\\u0081", "Á", nombre.producto),
+    nombre.producto = gsub("Ã\\u0096", "Ö", nombre.producto),
+    nombre.producto = trimws(nombre.producto)
+  ) %>%
+  filter(!is.na(nombre.producto), !is.na(precio.producto))
+
+```
+
 
 #### 1.2.2.2 Descripción de las variables del ticket
 
