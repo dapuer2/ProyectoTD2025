@@ -128,10 +128,14 @@ elementos.carpeta <- list.files(path = rutadatos,
 
 Una vez que todos los tickets han sido recolectados y transformados en
 texto plano, es momento de almacenar la información contenida en ellos.
+Para ello, hemos realizado 2 data.frames de trabajo:
 
 
 -   ***df.ticket***: Este data frame recopila la información general de
     cada ticket.
+    
+-   ***df.productos***: Este data frame recopila la información de cada producto
+comprado y su precio
 
 
 #### 1.2.2.1 Recogida de datos generales del ticket
