@@ -253,7 +253,7 @@ df.productos <- data.frame()
 for (d in elementos.carpeta) {
   
   contenido <- readLines(d,
-                       encoding = 'latin1',
+                       encoding = 'utf-8',
                        warn = FALSE)
   
   # Extraemos información del ticket
@@ -339,16 +339,9 @@ for (d in elementos.carpeta) {
     }
   }
 }
-
 # Limpieza final de los datos
-df.productos <- df.productos %>%
-  mutate(
-    nombre.producto = gsub("Ã\\u008d", "Í", nombre.producto),
-    nombre.producto = gsub("Ã\\u0081", "Á", nombre.producto),
-    nombre.producto = gsub("Ã\\u0096", "Ö", nombre.producto),
-    nombre.producto = trimws(nombre.producto)
-  ) %>%
-  filter(!is.na(nombre.producto), !is.na(precio.producto))
+df.productos <- df.productos %>%filter(!is.na(nombre.producto), !is.na(precio.producto))
+
 
 ```
 
