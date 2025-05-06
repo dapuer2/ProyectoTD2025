@@ -1,5 +1,6 @@
 ---
 title: "ProyectoTD2025    -    Grupo C"
+author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
   html_document:
@@ -78,6 +79,10 @@ if (!require("pacman")) {
 }
 
 ```
+
+## 1.1 Carga de librerías necesarias para el análisis
+
+Inicialmente, se cargan los paquetes necesarios para cada una de las fases del proyecto. Para hacerlo de forma más eficiente y ordenada, se utiliza el paquete pacman del lenguaje de programación R
 
 ```{r, echo = FALSE, warning=FALSE}
 
@@ -499,28 +504,40 @@ knitr::kable(
 
 ## 1.3 Preguntas propuestas
 
-Estas son las preguntas que tenemos que responder mediante gráficos.
+- Estas son las preguntas que tenemos que responder mediante el uso de gráficos:
 
-  - ¿Cuáles son los 5 productos, de los vendidos por unidades, con más ventas ? ¿Cuántas unidades de        cada uno se han vendido ?Ç
+  1) ¿Cuáles son los 5 productos, de los vendidos por unidades, con más ventas? 
+  ¿Cuántas unidades de cada uno se han vendido?
 
-  - Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son los 5 productos más vendidos ?            ¿Cuántos kilos se han vendido de cada uno de estos productos ?
+  2) Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son los 5 
+  productos más vendidos?¿Cuántos kilos se han vendido de cada uno de estos 
+  productos?
 
-  - Si consideramos la categoría de PESCADO. Cuáles son los 5 productos más vendidos ? ¿Cuántos kilos se      han vendido de cada uno de estos productos ?
+  3) Si consideramos la categoría de PESCADO. Cuáles son los 5 productos más 
+  vendidos? ¿Cuántos kilos se han vendido de cada uno de estos productos ?
 
-  - Muestra mediante un gráfico de líneas como ha variado el precio por kilo de las bananas y los           plátanos en los tickets disponibles, a lo largo del tiempo.
+  4) Muestra mediante un gráfico de líneas como ha variado el precio por kilo de 
+  las bananas y los plátanos en los tickets disponibles, a lo largo del tiempo.
 
-  - ¿ Cuál es la procedencia de los tickets ?¿ Qué ciudad/ pueblo tiene un mayor número de tickets ?
+  5) ¿Cuál es la procedencia de los tickets ?¿Qué ciudad/pueblo tiene un mayor 
+  número de tickets?
 
-  - Muestra mediante un diagrama el número de tickets recogidos cada día de las semana. ¿Si tuvieses que     cerrar un día entre semana qué día lo harías ?
-
-  - ¿Existe algún patrón en cuanto a la hora del día en que se realizan las compras?
-
-  - ¿Cuánto dinero de media se gastan los compradores?
-   
-  - ¿Cuanto dinero se suele añadir con el IVA?
-
-  - ¿Cuál es la tienda en la que más se ha comprado ? (Dirección tienda)
+  6) Muestra mediante un diagrama el número de tickets recogidos cada día de las 
+  semana. ¿Si tuvieses que cerrar un día entre semana qué día lo harías?
   
-  - ¿Cuál es el alimento comprado más caro?
+- Además de las preguntas propuestas por el profesorado, como equipo hemos 
+  formulado algunas cuestiones adicionales que podemos abordar con los datos 
+  disponibles. Estas son las siguientes:
+
+  · ¿Existe algún patrón en cuanto a la hora del día en que se realizan las 
+  compras?
+
+  · ¿Cuánto dinero de media se gastan los compradores?
+   
+  · ¿Cuanto dinero se suele añadir con el IVA?
+
+  · ¿Cuál es la tienda en la que más se ha comprado? (Dirección tienda)
+  
+  · ¿Cuál es el alimento comprado más caro?
 
 
