@@ -529,15 +529,15 @@ knitr::kable(
   formulado algunas cuestiones adicionales que podemos abordar con los datos 
   disponibles. Estas son las siguientes:
 
-  · ¿Existe algún patrón en cuanto a la hora del día en que se realizan las 
+  7) ¿Existe algún patrón en cuanto a la hora del día en que se realizan las 
   compras?
 
-  · ¿Cuánto dinero de media se gastan los compradores?
+  8) ¿Cuánto dinero de media se gastan los compradores?
    
-  · ¿Cuanto dinero se suele añadir con el IVA?
+  9) ¿Cuanto dinero se suele añadir con el IVA?
 
-  · ¿Cuál es la tienda en la que más se ha comprado? (Dirección tienda)
+  10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección tienda)
   
-  · ¿Cuál es el alimento comprado más caro?
+  11) ¿Cuál es el alimento comprado más caro?
 
 
