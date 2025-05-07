@@ -539,5 +539,73 @@ knitr::kable(
   10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección tienda)
   
   11) ¿Cuál es el alimento comprado más caro?
+  
+Como para hacer un gráfico de todos los productos que se han comprado sería un 
+poco difícil su comprensión ya que hay demasiados productos diferentes, podemos
+optar por agrupar los productos por rangos de precios y mostrar cuántos hay en 
+cada rango. Esto genera una visión general de la distribución de precios de los
+productos.
+```{r,fig.width=5,fig.height=3.5}
+library(ggplot2)
+
+# Filtramos los productos con precios entre 0 y 15€ (ya que mayores a este precio su precio no es el real, la importación de esos precios no esta correcta,ente)
+df_filtrado <- subset(df.productos, precio.producto >= 0 & precio.producto <= 15)
+
+# Definimos los intervalos personalizados 
+breaks <- seq(0, 15, by = 1)
+
+# Creamos los rangos de precios
+precio_ranges <- cut(df_filtrado$precio.producto, breaks = breaks, include.lowest = TRUE, right = FALSE)
+
+# Creamos un dataframe con la frecuencia de cada rango
+df_plot <- as.data.frame(table(precio_ranges))
+names(df_plot) <- c("Rango de Precio", "Cantidad")
+
+# Creamos el gráfico
+ggplot(df_plot, aes(x = `Rango de Precio`, y = Cantidad, fill = "Rango de Precio")) +
+  geom_bar(stat = "identity") +
+  labs(title = "Distribución de Precios de los Productos (0-15€)",
+       x = "Rango de Precio (€)",
+       y = "Cantidad de Productos",
+       fill = "Rango de Precio") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+```
+
+Y ahora, para encontrar los productos que están en el rango de precios entre 12
+y 15 euros y representarlos en un gráfico, primero filtraremos el dataframe 
+original para incluir solo los productos dentro de ese rango y luego mostraremos
+esos productos en un gráfico. 
+```{r,fig.width=4,fig.height=3}
+# Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
+productos_rango1 <- df.ticket.productos[df.ticket.productos$precio.producto >= 12.50 & 
+                                         df.ticket.productos$precio.producto <= 15, ]
+
+productos_rango1 = head(productos_rango1,-2)
+
+# Creamos un gráfico de barras horizontales para mostrar los productos en el 
+#rango de precios especificado
+ggplot(productos_rango1, aes(x = precio.producto, 
+                            y = reorder(nombre.producto, precio.producto))) +
+  geom_bar(stat = "identity", fill = "#FF6F61") +  # Cambiamos el color de las barras
+  geom_text(aes(label = sprintf("%.0f", precio.producto)),
+            hjust = -0.2, color = "black") +  # Agregamos etiquetas con el precio
+  labs(title = "Productos más caros",
+       x = "Precio",
+       y = "Producto",
+       subtitle = "Cantidad de productos y su precio") +  # Añadimos subtítulo
+  theme_minimal()
+
+```
+Por tanto, como podemos observar el alimento comprado más caro es el bogavante crudo
+el cual solo se ha comprado 1 vez, el cual su precio es de casi 15€.
+
+
+
 
 
