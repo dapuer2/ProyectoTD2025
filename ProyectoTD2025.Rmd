@@ -603,6 +603,17 @@ ggplot(tickets_dia_semana, aes(x = dia_semana, y = n, fill = dia_semana)) +
     8)  ¿Cuánto dinero de media se gastan los compradores?
 
     9)  ¿Cuanto dinero se suele añadir con el IVA?
+    
+```{r}
+# Debemos calcular el valor medio de la columna "iva.anayadido":
+
+df.ticket %>%
+  summarise(iva_promedio = mean(iva_anyadido, na.rm = TRUE))
+
+## NO consideramos los valores NA (faltantes)
+
+```
+    
 
     10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección
         tienda)
