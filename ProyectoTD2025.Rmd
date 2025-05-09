@@ -1,12 +1,12 @@
 ---
 title: "ProyectoTD2025    -    Grupo C"
+author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   html_notebook:
     echo: true
     number_sections: true
@@ -15,10 +15,11 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -81,6 +82,12 @@ if (!require("pacman")) {
 }
 
 ```
+
+## 1.1 Carga de librerías necesarias para el análisis
+
+Inicialmente, se cargan los paquetes necesarios para cada una de las
+fases del proyecto. Para hacerlo de forma más eficiente y ordenada, se
+utiliza el paquete pacman del lenguaje de programación R
 
 ```{r, echo = FALSE, warning=FALSE}
 
@@ -152,7 +159,7 @@ df.ticket <- data.frame()
 for (d in elementos.carpeta) {
   
   contenido <- readLines(d,
-                         encoding = 'latin1',
+                         encoding = 'utf-8',
                          warn = FALSE)
   
   # Dirección, Ciudad y Código Postal 
@@ -261,7 +268,7 @@ for (d in elementos.carpeta) {
   
   # Identificamos la sección de productos (después de "Importe" y antes de "TOTAL")
   inicio_productos <- grep("Importe", contenido) + 1
-  fin_productos <- grep("TOTAL \\(â‚¬\\)", contenido) - 1
+  fin_productos <- grep("TOTAL(€))", contenido) - 1
   
   # Si no encontramos el patrón exacto, buscamos alternativas
   if(length(fin_productos) == 0) {
@@ -281,7 +288,7 @@ for (d in elementos.carpeta) {
   }
   
   # Eliminamos líneas de DONACIÓN si existen
-  patron_donacion <- "DONACIÃ“N"
+  patron_donacion <- "DONACIÓN"
   lineas_donacion <- grep(patron_donacion, productos)
   if(length(lineas_donacion) > 0) {
     productos <- productos[-lineas_donacion]
@@ -494,7 +501,8 @@ knitr::kable(
 
 ## 1.3 Preguntas propuestas
 
-Estas son las preguntas que tenemos que responder mediante gráficos.
+-   Estas son las preguntas que tenemos que responder mediante el uso de
+    gráficos:
 
 -   ¿Cuáles son los 5 productos, de los vendidos por unidades, con más
     ventas ? ¿Cuántas unidades de cada uno se han vendido ?Ç
@@ -525,16 +533,9 @@ Estas son las preguntas que tenemos que responder mediante gráficos.
 
 -   ¿Cuanto dinero se suele añadir con el IVA?
 
--   ¿Cuál es la tienda en la que más se ha comprado ? (Dirección tienda)
-
--   ¿Cuál es el alimento comprado más caro?
-
-### Pregunta propuestas 1.3.1
-
-\# - ¿Cuáles son los 5 productos, de los vendidos por unidades, con más
-ventas ? ¿Cuántas unidades de cada uno se han vendido ?
-
-```{r echo=FALSE, fig.cap="**Figure 1.** Top 5 productos más vendidos por unidades", fig.align="center"}
+    1)  ¿Cuáles son los 5 productos, de los vendidos por unidades, con
+        más ventas? ¿Cuántas unidades de cada uno se han vendido?
+```{r,echo=FALSE}
 top_productos<-df.productos%>%
   group_by(nombre.producto)%>%# Primero agrupamos por los productos
   summarise(Unidades_Vendidas=sum(cantidad))%>%# Sumamos la cantidad de cada cantidad
@@ -548,4 +549,150 @@ ggplot(top9,aes(x=nombre.producto,y=Unidades_Vendidas))+
   )+theme_minimal()+theme(axis.text.x=element_text(angle=45,hjust=1,size=10))# Usamos element_text para ajustar los nombres de los productos que estan en el eje X
 ```
 
-**Análisis:** En esta gráfica podemos observar los productos más vendidos por unidades. El producto con mayor número de ventas es la leche desnatada sin lactosa, con 24 unidades, seguido de las lonchas de queso de cabra con 20. También destacan productos como los yogures Activia, los copos de avena o la barra de pan campesina. Aunque el título indica un Top 5, se han incluido más productos para ofrecer una visión más completa del comportamiento de ventas. Este análisis permite identificar los productos más demandados.
+En esta gráfica podemos observar los productos más vendidos por unidades. El producto con mayor número de ventas es la leche desnatada sin lactosa, con 24 unidades, seguido de las lonchas de queso de cabra con 20. También destacan productos como los yogures Activia, los copos de avena o la barra de pan campesina. Aunque el título indica un Top 5, se han incluido más productos para ofrecer una visión más completa del comportamiento de ventas. Este análisis permite identificar los productos más demandados.
+
+
+    2)  Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son
+        los 5 productos más vendidos?¿Cuántos kilos se han vendido de
+        cada uno de estos productos?
+
+    3)  Si consideramos la categoría de PESCADO. Cuáles son los 5
+        productos más vendidos? ¿Cuántos kilos se han vendido de cada
+        uno de estos productos ?
+
+    4)  Muestra mediante un gráfico de líneas como ha variado el precio
+        por kilo de las bananas y los plátanos en los tickets
+        disponibles, a lo largo del tiempo.
+
+    5)  ¿Cuál es la procedencia de los tickets ?¿Qué ciudad/pueblo tiene
+        un mayor número de tickets?
+```{r,fig.width=3,fig.height=3.5,echo=FALSE}
+# Gráfico de ciudades con mayor número de tickets
+ciudades_top <- df.ticket %>%
+  count(ciudad) %>%
+  arrange(desc(n)) %>%
+  top_n(5, n)
+
+ggplot(ciudades_top, aes(x = reorder(ciudad, n), y = n, fill = ciudad)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = n), hjust = -0.3, size = 3.5) +
+  labs(title = "Top 5 ciudades con más tickets en Mercadona",
+       x = "Ciudad",
+       y = "Número de tickets") +
+  coord_flip() +
+  theme(legend.position = "none")
+```
+        
+Valencia claramente lidera con 130 tickets. Alboraya aparece en segundo lugar con 50 tickets.
+
+    6)  Muestra mediante un diagrama el número de tickets recogidos cada
+        día de las semana. ¿Si tuvieses que cerrar un día entre semana
+        qué día lo harías?
+```{r,fig.width=5,fig.height=3.5,echo=FALSE}
+# Análisis de tickets por día de la semana
+tickets_dia_semana <- df.ticket %>%
+  mutate(dia_semana = wday(fecha, label = TRUE, week_start = 1, abbr = FALSE)) %>%
+  count(dia_semana) %>%
+  mutate(porcentaje = n / sum(n) * 100)
+
+# Gráfico de barras
+ggplot(tickets_dia_semana, aes(x = dia_semana, y = n, fill = dia_semana)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Distribución de tickets por día de la semana",
+       x = "Día de la semana",
+       y = "Número de tickets") +
+  theme(legend.position = "none")
+```
+        
+
+-   Además de las preguntas propuestas por el profesorado, como equipo
+    hemos formulado algunas cuestiones adicionales que podemos abordar
+    con los datos disponibles. Estas son las siguientes:
+
+    7)  ¿Existe algún patrón en cuanto a la hora del día en que se
+        realizan las compras?
+
+    8)  ¿Cuánto dinero de media se gastan los compradores?
+
+    9)  ¿Cuanto dinero se suele añadir con el IVA?
+
+    10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección
+        tienda)
+
+    11) ¿Cuál es el alimento comprado más caro?
+
+Como para hacer un gráfico de todos los productos que se han comprado
+sería un poco difícil su comprensión ya que hay demasiados productos
+diferentes, podemos optar por agrupar los productos por rangos de
+precios y mostrar cuántos hay en cada rango. Esto genera una visión
+general de la distribución de precios de los productos.
+
+```{r,fig.width=5,fig.height=3.5,echo=FALSE}
+library(ggplot2)
+
+# Filtramos los productos con precios entre 0 y 15€ (ya que mayores a este precio su precio no es el real, la importación de esos precios no esta correcta,ente)
+df_filtrado <- subset(df.productos, precio.producto >= 0 & precio.producto <= 15)
+
+# Definimos los intervalos personalizados 
+breaks <- seq(0, 15, by = 1)
+
+# Creamos los rangos de precios
+precio_ranges <- cut(df_filtrado$precio.producto, breaks = breaks, include.lowest = TRUE, right = FALSE)
+
+# Creamos un dataframe con la frecuencia de cada rango
+df_plot <- as.data.frame(table(precio_ranges))
+names(df_plot) <- c("Rango de Precio", "Cantidad")
+
+# Creamos el gráfico
+ggplot(df_plot, aes(x = `Rango de Precio`, y = Cantidad, fill = "Rango de Precio")) +
+  geom_bar(stat = "identity") +
+  labs(title = "Distribución de Precios de los Productos (0-15€)",
+       x = "Rango de Precio (€)",
+       y = "Cantidad de Productos",
+       fill = "Rango de Precio") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+
+
+
+
+
+
+```
+
+Y ahora, para encontrar los productos que están en el rango de precios
+entre 12 y 15 euros y representarlos en un gráfico, primero filtraremos
+el dataframe original para incluir solo los productos dentro de ese
+rango y luego mostraremos esos productos en un gráfico.
+
+```{r,fig.width=5,fig.height=3.5,echo=FALSE}
+# Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
+productos_rango1 <- df.productos[df.productos$precio.producto >= 12.50 & 
+                                         df.productos$precio.producto <= 15, ]
+
+productos_rango1 = head(productos_rango1,-2)
+
+# Creamos un gráfico de barras horizontales para mostrar los productos en el 
+#rango de precios especificado
+ggplot(productos_rango1, aes(x = precio.producto, 
+                            y = reorder(nombre.producto, precio.producto))) +
+  geom_bar(stat = "identity", fill = "#FF6F61") +  # Cambiamos el color de las barras
+  geom_text(aes(label = sprintf("%.0f", precio.producto)),
+            hjust = -0.2, color = "black") +  # Agregamos etiquetas con el precio
+  labs(title = "Productos más caros",
+       x = "Precio",
+       y = "Producto",
+       subtitle = "Cantidad de productos y su precio") +  # Añadimos subtítulo
+  theme_minimal()
+```
+
+
+Por tanto, como podemos observar el alimento comprado más caro es el
+bogavante crudo el cual solo se ha comprado 1 vez, el cual su precio es
+de casi 15€.
+
