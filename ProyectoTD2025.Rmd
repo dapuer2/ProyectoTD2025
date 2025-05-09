@@ -556,7 +556,7 @@ En esta gráfica podemos observar los productos más vendidos por unidades. El p
         los 5 productos más vendidos?¿Cuántos kilos se han vendido de
         cada uno de estos productos?
         
-```{r}
+```{r,echo=FALSE,fig.align='center'}
 # 1) Definimos un vector con todas las frutas y verduras registradas:
 
 frutas_verduras = c(
@@ -596,7 +596,7 @@ df.productos %>%
         productos más vendidos? ¿Cuántos kilos se han vendido de cada
         uno de estos productos ?
         
-```{r}
+```{r,echo=FALSE,fig.align='center'}
 # 1) Creamos un vector con los productos de la categoría PESCADO
 productos_pescado <- c("ESCALOPIN SALMON", "BERBERECHO", "ATÚN CLARO OLIVA PK6", "BACALAO AHUMADO", "PORCIONES BACALAO", "ATÚN CLARO GIRAS PK6", "SALMÓN AHUMADO", "SARDINA AHUMADA")
 
@@ -678,12 +678,52 @@ ggplot(tickets_dia_semana, aes(x = dia_semana, y = n, fill = dia_semana)) +
 
     7)  ¿Existe algún patrón en cuanto a la hora del día en que se
         realizan las compras?
+```{r,fig.align="center",echo=FALSE}
+tickets_hora<-df.ticket%>%
+  mutate(hora_compra=hour(hora))%>%
+  count(hora_compra)%>%
+  arrange(hora_compra)
+
+# 2) Gráfico mejorado sin librerías nuevas
+ggplot(tickets_hora,aes(x=hora_compra, y=n, fill=n)) +
+  geom_col(width=0.8, color="white") +                       # columnas con borde blanco
+  scale_fill_gradient(low="lightblue",high="navy") +        # degradado de azul
+  geom_text(aes(label=n),vjust=-0.5, size=3, color="black") +
+  scale_x_continuous(breaks=0:23) +                            # mostrar todas las horas
+  labs(
+    title= "Compras por Hora del Día",
+    subtitle= "Número de tickets registrados por cada hora",
+    x= "Hora (0–23)",
+    y= "Número de tickets",
+    fill= "Cantidad"
+  ) +
+  theme_minimal(base_size=14)                            
+
+```
+Las horas a las que mas compras hay es justo antes de cenar, donde la gente vuelve del trabajo y baja a comprar la cena y donde menos hay es por la mañana, a la hora de comer y a la hora de cenar, lo que tiene sentido ya que están comprando lo que van a necesitar para preparar su comida o su cena         
 
     8)  ¿Cuánto dinero de media se gastan los compradores?
-
+```{r,fig.align="center",echo=FALSE}
+gasto_medio<-df.ticket %>%
+  summarise(gasto_promedio=mean(precio.total,na.rm=TRUE)) %>%
+  pull(gasto_promedio)
+ggplot(df.ticket,aes(x=precio.total)) +
+  geom_histogram(binwidth=5,fill="lightcoral",color="white") +
+  geom_vline(xintercept=gasto_medio,linetype="dashed",size=1) +
+  annotate("text",x=gasto_medio + 5,y=Inf,label=paste0("Media = ",round(gasto_medio,2)," €"),
+           vjust=2, hjust=0,
+           size=4) +
+  labs(
+    title= "Distribución del gasto por ticket",
+    x= "Gasto por ticket (€)",
+    y= "Frecuencia"
+  ) +
+ theme_minimal()
+```
+A partir de esta gráfica se puede ver que  la media da 46,31€ pese a que la mayoria de las compras sean mas baratas debido a algunas compras muy grandes que han habido en nustro conjunto de datos 
     9)  ¿Cuanto dinero se suele añadir con el IVA?
     
-```{r}
+```{r,echo=FALSE,fig.align="center"}
 # Debemos calcular el valor medio de la columna "iva.anayadido":
 
 df.ticket %>%
@@ -707,7 +747,7 @@ df.ticket%>%
        y="Número de compras") +
   theme_minimal()
 ```
-En esta gráfica muestra el número de compras que se ha hecho en los Mercadonas según los datos que tenemos, podemos observar que    
+En esta gráfica muestra el número de compras que se ha hecho en los Mercadonas según los datos que tenemos, podemos observar que la dirección que más se repite es C/QUART 120, donde se ha comprado un total de 51 ocasiones; esta calle  está situada en el corazón de Valencia (España) en una zona céntrica y bien comunicada. También hay que destacar la dirección C/ PINTOR PERIS ARAGÓ 34, la cual esta ubicada en el centro de Alboraya, donde se ha comprado 50 veces, lo cual concuerda con la anterior gráfica de la pregunta 5
 
     11) ¿Cuál es el alimento comprado más caro?
 
