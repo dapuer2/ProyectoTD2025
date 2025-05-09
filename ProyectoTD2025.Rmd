@@ -595,10 +595,41 @@ df.productos %>%
     3)  Si consideramos la categoría de PESCADO. Cuáles son los 5
         productos más vendidos? ¿Cuántos kilos se han vendido de cada
         uno de estos productos ?
+        
+```{r}
+# 1) Creamos un vector con los productos de la categoría PESCADO
+productos_pescado <- c("ESCALOPIN SALMON", "BERBERECHO", "ATÚN CLARO OLIVA PK6", "BACALAO AHUMADO", "PORCIONES BACALAO", "ATÚN CLARO GIRAS PK6", "SALMÓN AHUMADO", "SARDINA AHUMADA")
+
+# 2) Filtramos los productos de la categoría PESCADO
+pescado <- df.productos %>%
+  filter(nombre.producto %in% productos_pescado)
+
+# 3) Agrupamos por producto y sumamos el total de kilos vendidos
+top_pescado <- pescado %>%
+  group_by(nombre.producto) %>% # Agrupamos los datos en función del producto
+  summarise(Kilos_Vendidos = sum(cantidad, na.rm = TRUE)) %>% # Sumamos la cantidad de cada producto
+  arrange(desc(Kilos_Vendidos)) %>% # Aplicamos un orden descendente
+  slice_head(n = 5) # Seleccionamos los 5 productos con mas kilos vendidos
+
+print(top_pescado)
+
+# 4) Representamos los resultados en un gráfico de barras
+library(ggplot2)
+ggplot(top_pescado, aes(x = reorder(nombre.producto, -Kilos_Vendidos), y = Kilos_Vendidos)) +
+  geom_col(fill = "violet") + # Color de las barras
+  geom_text(aes(label = Kilos_Vendidos), vjust = -0.3) + # Añadimos etiquetas con los valores
+  labs(title = "Top 5 productos más vendidos en PESCADO", x = "Producto", y = "Kilos Vendidos") + # Títulos
+  theme_minimal() # Aplicamos estilo minimalista
+```
+En la grafica podemos observar los productos mas vendidos de la categoria pescado y el total vendido en kilos de cada uno de ellos. En primer lugar, el escalopín de salmón lidera con 6 kilos vendidos, seguido por el berberecho con 3 kilos. Los productos atún claro en aceite de oliva, bacalao ahumado y porciones de bacalao comparten la misma cantidad de ventas, 2 kilos cada uno.
 
     4)  Muestra mediante un gráfico de líneas como ha variado el precio
         por kilo de las bananas y los plátanos en los tickets
         disponibles, a lo largo del tiempo.
+
+```{r}
+```
+
 
     5)  ¿Cuál es la procedencia de los tickets ?¿Qué ciudad/pueblo tiene
         un mayor número de tickets?
