@@ -614,7 +614,6 @@ top_pescado <- pescado %>%
 print(top_pescado)
 
 # 4) Representamos los resultados en un gráfico de barras
-library(ggplot2)
 ggplot(top_pescado, aes(x = reorder(nombre.producto, -Kilos_Vendidos), y = Kilos_Vendidos)) +
   geom_col(fill = "violet") + # Color de las barras
   geom_text(aes(label = Kilos_Vendidos), vjust = -0.3) + # Añadimos etiquetas con los valores
@@ -628,6 +627,24 @@ En la grafica podemos observar los productos mas vendidos de la categoria pescad
         disponibles, a lo largo del tiempo.
 
 ```{r}
+# Visualizando los datos en el data frame en el cual se encuentra cada uno de los productos, no hemos encontrado ninguna compra de platanos o bananas o algo que haga referencia a ellos. Por este motivo, ha sido imposible llevar a cabo una representaciñon de la evolución del kilo de bananas y platanos a lo largo del tiempo. No obstante, este es el código que se debería utilizar en el caso de que si que se hubieran llevado a cabo compras de estos productos.
+
+# 1) Filtramos los productos Banana y Plátano
+frutas <- df.productos %>%
+  filter(nombre.producto %in% c("BANANA", "PLATANO"))
+
+# 2) Calculamos el precio por kilo
+frutas <- frutas %>%
+  mutate(precio_por_kilo = precio.producto / cantidad)
+
+# 3) Creamos el gráfico de líneas
+ggplot(frutas, aes(x = fecha, y = precio_por_kilo, color = nombre.producto, group = nombre.producto)) +
+  geom_line(size = 1) +
+  geom_point() +
+  labs(title = "Variación del precio por kilo de Bananas y Plátanos",
+       x = "Fecha",
+       y = "Precio por kilo (€)") +
+  theme_minimal()
 ```
 
 
