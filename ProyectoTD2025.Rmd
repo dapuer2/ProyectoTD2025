@@ -709,7 +709,7 @@ gasto_medio<-df.ticket %>%
   pull(gasto_promedio)
 ggplot(df.ticket,aes(x=precio.total)) +
   geom_histogram(binwidth=5,fill="lightcoral",color="white") +
-  geom_vline(xintercept=gasto_medio,linetype="dashed",size=1) +
+  geom_vline(xintercept=gasto_medio,linetype="dashed",linewidth = 1) +
   annotate("text",x=gasto_medio + 5,y=Inf,label=paste0("Media = ",round(gasto_medio,2)," €"),
            vjust=2, hjust=0,
            size=4) +
