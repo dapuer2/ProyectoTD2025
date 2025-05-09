@@ -535,7 +535,7 @@ knitr::kable(
 
     1)  ¿Cuáles son los 5 productos, de los vendidos por unidades, con
         más ventas? ¿Cuántas unidades de cada uno se han vendido?
-```{r,echo=FALSE}
+```{r,echo=FALSE,fig.align="center"}
 top_productos<-df.productos%>%
   group_by(nombre.producto)%>%# Primero agrupamos por los productos
   summarise(Unidades_Vendidas=sum(cantidad))%>%# Sumamos la cantidad de cada cantidad
@@ -566,7 +566,7 @@ En esta gráfica podemos observar los productos más vendidos por unidades. El p
 
     5)  ¿Cuál es la procedencia de los tickets ?¿Qué ciudad/pueblo tiene
         un mayor número de tickets?
-```{r,fig.width=3,fig.height=3.5,echo=FALSE}
+```{r,fig.align="center",echo=FALSE}
 # Gráfico de ciudades con mayor número de tickets
 ciudades_top <- df.ticket %>%
   count(ciudad) %>%
@@ -588,7 +588,7 @@ Valencia claramente lidera con 130 tickets. Alboraya aparece en segundo lugar co
     6)  Muestra mediante un diagrama el número de tickets recogidos cada
         día de las semana. ¿Si tuvieses que cerrar un día entre semana
         qué día lo harías?
-```{r,fig.width=5,fig.height=3.5,echo=FALSE}
+```{r,fig.align="center",echo=FALSE}
 # Análisis de tickets por día de la semana
 tickets_dia_semana <- df.ticket %>%
   mutate(dia_semana = wday(fecha, label = TRUE, week_start = 1, abbr = FALSE)) %>%
@@ -627,7 +627,7 @@ diferentes, podemos optar por agrupar los productos por rangos de
 precios y mostrar cuántos hay en cada rango. Esto genera una visión
 general de la distribución de precios de los productos.
 
-```{r,fig.width=5,fig.height=3.5,echo=FALSE}
+```{r,fig.align="center",echo=FALSE}
 library(ggplot2)
 
 # Filtramos los productos con precios entre 0 y 15€ (ya que mayores a este precio su precio no es el real, la importación de esos precios no esta correcta,ente)
@@ -670,7 +670,7 @@ entre 12 y 15 euros y representarlos en un gráfico, primero filtraremos
 el dataframe original para incluir solo los productos dentro de ese
 rango y luego mostraremos esos productos en un gráfico.
 
-```{r,fig.width=5,fig.height=3.5,echo=FALSE}
+```{r,fig.align="center",echo=FALSE}
 # Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
 productos_rango1 <- df.productos[df.productos$precio.producto >= 12.50 & 
                                          df.productos$precio.producto <= 15, ]
