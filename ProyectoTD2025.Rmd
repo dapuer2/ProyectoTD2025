@@ -3,10 +3,11 @@ title: "ProyectoTD2025    -    Grupo C"
 author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   html_notebook:
     echo: true
     number_sections: true
@@ -15,11 +16,10 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -556,7 +556,7 @@ En esta gráfica podemos observar los productos más vendidos por unidades. El p
         los 5 productos más vendidos?¿Cuántos kilos se han vendido de
         cada uno de estos productos?
         
-```{r,echo=FALSE,fig.align='center'}
+```{r,echo=FALSE,fig.align="center"}
 # 1) Definimos un vector con todas las frutas y verduras registradas:
 
 frutas_verduras = c(
