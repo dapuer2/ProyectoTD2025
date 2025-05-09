@@ -1,0 +1,9 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {subsection}{1. Introducción}{1}{section*.2}%
+\contentsline {subsection}{1.1 Carga de librerías necesarias para el análisis}{1}{section*.3}%
+\contentsline {subsection}{1.2 Extracción de datos del fichero de texto}{2}{section*.4}%
+\contentsline {subsubsection}{1.2.1 Recopilación de ficheros .txt}{2}{section*.5}%
+\contentsline {subsubsection}{1.2.2 Recopilación de los datos}{2}{section*.6}%
+\contentsline {paragraph}{1.2.2.1 Recogida de datos generales del ticket}{2}{section*.7}%
+\contentsline {paragraph}{1.2.2.2 Descripción de las variables del ticket}{2}{section*.8}%
+\contentsline {subsection}{1.3 Preguntas propuestas}{4}{section*.9}%
