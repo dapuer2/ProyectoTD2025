@@ -665,6 +665,18 @@ df.ticket %>%
 
     10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección
         tienda)
+```{r,fig.align="center",echo=FALSE}
+df.ticket%>%
+  count(direccion,sort=TRUE) %>% # Utilizamos count para contar las veces que aparece cada tienda
+  ggplot(aes(x=direccion, y=n))+
+  geom_col(fill="steelblue") +
+  coord_flip()+  # gira para barras horizontales
+  labs(title="Compras por tienda (dirección)",
+       x="Dirección de la tienda",
+       y="Número de compras") +
+  theme_minimal()
+```
+En esta gráfica muestra el número de compras que se ha hecho en los Mercadonas según los datos que tenemos, podemos observar que    
 
     11) ¿Cuál es el alimento comprado más caro?
 
@@ -736,4 +748,3 @@ ggplot(productos_rango1, aes(x = precio.producto,
 Por tanto, como podemos observar el alimento comprado más caro es el
 bogavante crudo el cual solo se ha comprado 1 vez, el cual su precio es
 de casi 15€.
-
