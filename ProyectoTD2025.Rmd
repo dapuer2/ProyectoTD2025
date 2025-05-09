@@ -657,12 +657,6 @@ ggplot(df_plot, aes(x = `Rango de Precio`, y = Cantidad, fill = "Rango de Precio
   )
 ```
 
-
-
-
-
-
-
 ```
 
 Y ahora, para encontrar los productos que están en el rango de precios
