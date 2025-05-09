@@ -555,6 +555,42 @@ En esta gráfica podemos observar los productos más vendidos por unidades. El p
     2)  Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son
         los 5 productos más vendidos?¿Cuántos kilos se han vendido de
         cada uno de estos productos?
+        
+```{r}
+# 1) Definimos un vector con todas las frutas y verduras registradas:
+
+frutas_verduras = c(
+    "ROJA ACIDULCE BOLSA",        # probablemente manzana o similar
+    "BURGER BERENJENA",           # berenjena
+    "PATATA 3 KG",                # patata
+    "TOMATE ENTERO PELADO",       # tomate
+    "AJO SECO 250 G",             # ajo
+    "CHAMPIÑÓN GRANDE BAN",       # champiñón
+    "NUEZ CASCARA NATURAL",       # nuez
+    "MANZANA GOLDEN BOLSA",       # manzana
+    "ESP VERDE FINO",             # espárrago
+    "SETA BANDEJA",               # seta
+    "CHAMPIÑON PORTOBELLO",       # champiñón
+    "FRESÓN",                     # fresón
+    "AGUACATE BANDEJA",           # aguacate
+    "GARROFON",
+    "AJOS TIERNOS",
+    "TOMATE TRITURADO"
+    )
+
+# 2) Iniciamos la búsqueda de los 5 productos de la categoría de FRUTAS Y 
+#    VERDURAS más vendidos, y el cálculo de los kilos vendidos de cada uno de 
+#    ellos:
+
+df.productos %>%
+  filter(nombre.producto %in% frutas_verduras) %>% # filtramos los productos
+  group_by(nombre.producto) %>% # agrupamos los datos por nombre de producto
+  summarise(kilos_vendidos = sum(cantidad, na.rm = TRUE)) %>% # sumamos la cantidad por producto, ignorando NAs
+  arrange(desc(kilos_vendidos)) %>% # ordenamos los productos de mayor a menor cantidad
+  slice_head(n = 5) # seleccionamos los 5 productos con más cantidad
+
+```
+        
 
     3)  Si consideramos la categoría de PESCADO. Cuáles son los 5
         productos más vendidos? ¿Cuántos kilos se han vendido de cada
@@ -615,6 +651,17 @@ ggplot(tickets_dia_semana, aes(x = dia_semana, y = n, fill = dia_semana)) +
     8)  ¿Cuánto dinero de media se gastan los compradores?
 
     9)  ¿Cuanto dinero se suele añadir con el IVA?
+    
+```{r}
+# Debemos calcular el valor medio de la columna "iva.anayadido":
+
+df.ticket %>%
+  summarise(iva_promedio = mean(iva_anyadido, na.rm = TRUE))
+
+## NO consideramos los valores NA (faltantes)
+
+```
+    
 
     10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección
         tienda)
