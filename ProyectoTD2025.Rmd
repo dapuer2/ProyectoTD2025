@@ -3,11 +3,10 @@ title: "ProyectoTD2025    -    Grupo C"
 author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   html_notebook:
     echo: true
     number_sections: true
@@ -16,10 +15,11 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -631,7 +631,7 @@ En la grafica podemos observar los productos mas vendidos de la categoria pescad
 
 # 1) Filtramos los productos Banana y Plátano
 frutas <- df.productos %>%
-  filter(nombre.producto %in% c("BANANA", "PLATANO"))
+  filter(nombre.producto %in% c("BANANA", "PLATANO CANARIO",""))
 
 # 2) Calculamos el precio por kilo
 frutas <- frutas %>%
