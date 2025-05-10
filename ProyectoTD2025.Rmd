@@ -148,7 +148,51 @@ Para ello, hemos realizado 2 data.frames de trabajo:
 
 #### 1.2.2.1 Recogida de datos generales del ticket
 
-Creamos un data.frame con los datos del ticket
+Las variables creadas y almacenadas para esta tabla con datos más
+generales es la siguiente:
+
+-   ***numero.factura***: Es una variable de tipo texto que identifica
+    unívocamente cada ticket analizado durante el transcurso del
+    análisis.
+-   ***precio.total***: Es una variable de tipo numérico que informa
+    sobre el valor del precio total del ticket
+-   ***precio.total.sin.IVA***: Es una variable de tipo numérico que
+    informa sobre el valor del precio total del ticket, quitando todo el
+    IVA añadido a cada producto.
+-   ***iva.anyadido***: Es una variable de tipo numérico que informa
+    sobre el valor total de IVA añadido a todos los productos.
+-   ***direccion***: Es una variable de tipo categórico que informa
+    sobre la dirección del Mercadona donde se realizó la compra.
+-   ***ciudad***: Es una variable de tipo categórico que informa sobre
+    la ciudad donde se realizó la compra.
+-   ***codigo.postal***: Es una variable de tipo categórico que,
+    análogamente a la ciudad, informa sobre el código postal que tiene
+    la ciudad donde se realizó la compra.
+-   ***telefono***: Es un valor de tipo texto que indica el número de
+    teléfono del Mercadona donde se realizó la compra.
+-   ***fecha***: Es una variable de tipo fecha que indica el día en el
+    que se realizó la compra.
+-   ***hora***: Es una variable de tipo periodo que indica la hora
+    exacta en la que se realizó el pago de la compra.
+-   ***tipo.tarjeta***: Es una variable de tipo categórico que
+    representa las marcas de tarjetas de crédito o débito utilizadas
+    junto con la indicación de VERIFICADO POR DISPOSITIVO, que
+    representa un método adicional de autenticación.
+-   ***metodo.pago***: Es una variable de tipo categórico que representa
+    los diferentes métodos de pago utilizados en las transacciones
+    registradas.
+-   ***autorizacion.pago***: Es una variable de tipo texto que
+    representa la autorización del banco con respecto al pago
+    solicitado.
+-   ***identificacion.aplicacion.pago***: Es una variable de tipo texto
+    que representa la identifficación de la aplicación bancaria
+    utilizada a la hora de realizar el pago.
+-   ***autorizacion.transaccion***: Es una variable de tipo texto que
+    representa el tipo de transacción realizada.
+-   ***numero.centro***: Es una variable de tipo texto que representa el
+    número asociado al centro donde se ha realizado la compra.
+-   ***numero.caja***: Es una variable de tipo texto que representa la
+    caja en la que el usuario ha sido atendido.
 
 ```{r,  echo=FALSE}
 
@@ -252,6 +296,30 @@ precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio 
 }
 ```
 
+#### 1.2.2.1 Recogida de datos de los productos del ticket
+
+Las variables creadas y almacenadas para la tabla de los productos es
+la siguiente:
+
+-   ***numero.factura***: Es una variable de tipo texto que identifica
+    unívocamente cada ticket analizado durante el transcurso del
+    análisis.
+-   ***cantidad***: Es una variable de tipo numérico que informa sobre
+    la cantidad de productos comprados. En el caso en el que el producto
+    esté condicionado por la variable peso, la cantidad será indicada
+    como 1.
+-   ***nombre.producto***: Es una variable de tipo categórico que
+    informa sobre el nombre del producto.
+-   ***precio.producto***: Es una variable de tipo numérico que indica
+    el valor del producto por una unidad del mismo. Es decir, no tiene
+    en cuenta la cantidad de productos de ese nombre comprados.
+
+
+Los nombres de las variables son bastante descriptivos pero es necesaria
+una pequeña explicación sobre ellos para en caso de olvidarse o retomar
+el proyecto en un futuro sea fácil su entendimiento y rápida la puesta
+en marcha.
+
 ```{r, echo= FALSE, message=FALSE, warning=FALSE}
 
 df.productos <- data.frame()
@@ -351,58 +419,8 @@ df.productos <- df.productos %>%filter(!is.na(nombre.producto), !is.na(precio.pr
 
 ```
 
-#### 1.2.2.2 Descripción de las variables del ticket
+#### 1.2.2.2 Tablas para facilitar la información que contienen los tickets
 
-Las variables creadas y almacenadas para esta tabla con datos más
-generales es la siguiente:
-
--   ***numero.factura***: Es una variable de tipo texto que identifica
-    unívocamente cada ticket analizado durante el transcurso del
-    análisis.
--   ***precio.total***: Es una variable de tipo numérico que informa
-    sobre el valor del precio total del ticket
--   ***precio.total.sin.IVA***: Es una variable de tipo numérico que
-    informa sobre el valor del precio total del ticket, quitando todo el
-    IVA añadido a cada producto.
--   ***iva.anyadido***: Es una variable de tipo numérico que informa
-    sobre el valor total de IVA añadido a todos los productos.
--   ***direccion***: Es una variable de tipo categórico que informa
-    sobre la dirección del Mercadona donde se realizó la compra.
--   ***ciudad***: Es una variable de tipo categórico que informa sobre
-    la ciudad donde se realizó la compra.
--   ***codigo.postal***: Es una variable de tipo categórico que,
-    análogamente a la ciudad, informa sobre el código postal que tiene
-    la ciudad donde se realizó la compra.
--   ***telefono***: Es un valor de tipo texto que indica el número de
-    teléfono del Mercadona donde se realizó la compra.
--   ***fecha***: Es una variable de tipo fecha que indica el día en el
-    que se realizó la compra.
--   ***hora***: Es una variable de tipo periodo que indica la hora
-    exacta en la que se realizó el pago de la compra.
--   ***tipo.tarjeta***: Es una variable de tipo categórico que
-    representa las marcas de tarjetas de crédito o débito utilizadas
-    junto con la indicación de VERIFICADO POR DISPOSITIVO, que
-    representa un método adicional de autenticación.
--   ***metodo.pago***: Es una variable de tipo categórico que representa
-    los diferentes métodos de pago utilizados en las transacciones
-    registradas.
--   ***autorizacion.pago***: Es una variable de tipo texto que
-    representa la autorización del banco con respecto al pago
-    solicitado.
--   ***identificacion.aplicacion.pago***: Es una variable de tipo texto
-    que representa la identifficación de la aplicación bancaria
-    utilizada a la hora de realizar el pago.
--   ***autorizacion.transaccion***: Es una variable de tipo texto que
-    representa el tipo de transacción realizada.
--   ***numero.centro***: Es una variable de tipo texto que representa el
-    número asociado al centro donde se ha realizado la compra.
--   ***numero.caja***: Es una variable de tipo texto que representa la
-    caja en la que el usuario ha sido atendido.
-
-Los nombres de las variables son bastante descriptivos pero es necesaria
-una pequeña explicación sobre ellos para en caso de olvidarse o retomar
-el proyecto en un futuro sea fácil su entendimiento y rápida la puesta
-en marcha.
 
 ```{r, echo = FALSE, warning=FALSE}
 # Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
@@ -504,34 +522,6 @@ knitr::kable(
 -   Estas son las preguntas que tenemos que responder mediante el uso de
     gráficos:
 
--   ¿Cuáles son los 5 productos, de los vendidos por unidades, con más
-    ventas ? ¿Cuántas unidades de cada uno se han vendido ?Ç
-
--   Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son los 5
-    productos más vendidos ? ¿Cuántos kilos se han vendido de cada uno
-    de estos productos ?
-
--   Si consideramos la categoría de PESCADO. Cuáles son los 5 productos
-    más vendidos ? ¿Cuántos kilos se han vendido de cada uno de estos
-    productos ?
-
--   Muestra mediante un gráfico de líneas como ha variado el precio por
-    kilo de las bananas y los plátanos en los tickets disponibles, a lo
-    largo del tiempo.
-
--   ¿ Cuál es la procedencia de los tickets ?¿ Qué ciudad/ pueblo tiene
-    un mayor número de tickets ?
-
--   Muestra mediante un diagrama el número de tickets recogidos cada día
-    de las semana. ¿Si tuvieses que cerrar un día entre semana qué día
-    lo harías ?
-
--   ¿Existe algún patrón en cuanto a la hora del día en que se realizan
-    las compras?
-
--   ¿Cuánto dinero de media se gastan los compradores?
-
--   ¿Cuanto dinero se suele añadir con el IVA?
 
     1)  ¿Cuáles son los 5 productos, de los vendidos por unidades, con
         más ventas? ¿Cuántas unidades de cada uno se han vendido?
@@ -804,12 +794,33 @@ ggplot(df_plot, aes(x = `Rango de Precio`, y = Cantidad, fill = "Rango de Precio
   )
 ```
 
-```
+
 
 Y ahora, para encontrar los productos que están en el rango de precios
 entre 12 y 15 euros y representarlos en un gráfico, primero filtraremos
 el dataframe original para incluir solo los productos dentro de ese
 rango y luego mostraremos esos productos en un gráfico.
+
+```{r,fig.align="center",echo=FALSE}
+# Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
+productos_rango1 <- df.productos[df.productos$precio.producto >= 12.50 & 
+                                         df.productos$precio.producto <= 15, ]
+
+productos_rango1 = head(productos_rango1,-2)
+
+# Creamos un gráfico de barras horizontales para mostrar los productos en el 
+#rango de precios especificado
+ggplot(productos_rango1, aes(x = precio.producto, 
+                            y = reorder(nombre.producto, precio.producto))) +
+  geom_bar(stat = "identity", fill = "#FF6F61") +  # Cambiamos el color de las barras
+  geom_text(aes(label = sprintf("%.0f", precio.producto)),
+            hjust = -0.2, color = "black") +  # Agregamos etiquetas con el precio
+  labs(title = "Productos más caros",
+       x = "Precio",
+       y = "Producto",
+       subtitle = "Cantidad de productos y su precio") +  # Añadimos subtítulo
+  theme_minimal()
+```
 
 ```{r,fig.align="center",echo=FALSE}
 # Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
