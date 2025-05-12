@@ -748,6 +748,7 @@ ggplot(df.ticket,aes(x=precio.total)) +
  theme_minimal()
 ```
 A partir de esta gráfica se puede ver que  la media da 46,31€ pese a que la mayoria de las compras sean mas baratas debido a algunas compras muy grandes que han habido en nustro conjunto de datos 
+
     9)  ¿Cuanto dinero se suele añadir con el IVA?
     
 ```{r,echo=FALSE,fig.align="center"}
@@ -867,3 +868,11 @@ ggplot(productos_rango1, aes(x = precio.producto,
 Por tanto, como podemos observar el alimento comprado más caro es el
 bogavante crudo el cual solo se ha comprado 1 vez, el cual su precio es
 de casi 15€.
+
+# 1.4 Conclusiones
+
+Para concluir, nos gustaría expresar los beneficios que nos ha supuesto realizar este trabajo.
+La resolución de las preguntas planteadas sobre los tickets de Mercadona y la extracción de las
+variables que tiene cada ticket nos han ayudado a saber más acerca de Mercadona, ya sean los producto 
+más vendidos en diferentes categorías (fruta, pescado), la hora de más afluencia de gente comprando, 
+el dinero de media que se gastan los compradores...
