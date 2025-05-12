@@ -876,3 +876,24 @@ La resolución de las preguntas planteadas sobre los tickets de Mercadona y la e
 variables que tiene cada ticket nos han ayudado a saber más acerca de Mercadona, ya sean los producto 
 más vendidos en diferentes categorías (fruta, pescado), la hora de más afluencia de gente comprando, 
 el dinero de media que se gastan los compradores...
+
+Este proyecto ha sido fundamental para ampliar nuestro conocimiento sobre el conjunto de datos. Además,
+hemos adquirido experiencia en la resolución de los desafíos comunes que surgen al trabajar con datos.
+Esta experiencia nos ha permitido comprender mejor las complejidades involucradas en el análisis de 
+datos y cómo abordarlas de manera efectiva en futuros proyectos.
+
+Este proyecto ha sido de suma importancia, ya que nos ha proporcionado la invaluable experiencia de 
+abordar una problemática desde cero, trabajando con datos y extrayendo conclusiones significativas. 
+
+Es importante señalar que los resultados de este proyecto deben ser interpretados con precaución debido
+a la limitada cantidad de datos disponibles. En estudios similares, se suelen analizar millones de tickets
+electrónicos para obtener conclusiones más sólidas y representativas de los hábitos de compra. 
+
+Este proyecto ha sido una oportunidad invaluable para mejorar nuestras habilidades de trabajo en equipo.
+Durante el proceso, hemos enfrentado decisiones conjuntas que han fortalecido nuestra colaboración y 
+capacidad para trabajar de manera efectiva como grupo. Estas experiencias seguramente nos serán útiles 
+en futuros proyectos, donde la capacidad de tomar decisiones en equipo juega un papel crucial en el éxito 
+general del trabajo.
+
+En definitiva, este trabajo nos ha servido para mejorar en valores y para iniciarnos en el mundo de 
+los datos y su análisis.
