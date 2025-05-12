@@ -600,6 +600,33 @@ df.productos %>%
   slice_head(n = 5) # seleccionamos los 5 productos con más cantidad
 
 ```
+
+```{r}
+#Hacemos un data.frame con los datos de la tabla de arriba
+top_frutas_verduras <- data.frame(
+  nombre.producto = c("TOMATE TRITURADO", "NUEZ CASCARA NATURAL", 
+                      "AGUACATE BANDEJA", "AJO SECO 250 G", "ESP VERDE FINO"),
+  kilos_vendidos = c(12, 7, 5, 5, 5)
+)
+
+# Hacemos la gráfica
+ggplot(top_frutas_verduras, aes(x = reorder(nombre.producto, -kilos_vendidos), 
+                               y = kilos_vendidos)) +
+  geom_col(fill = "#4CAF50", width = 0.7) +  # Usamos geom_col para valores explícitos
+  geom_text(aes(label = kilos_vendidos), 
+            position = position_dodge(width = 0.9), 
+            vjust = -0.5, 
+            size = 4,
+            fontface = "bold") +
+  labs(title = "TOP 5 - Frutas y Verduras más vendidas",
+       subtitle = "Cantidad vendida en kilos",
+       x = "",
+       y = "Kilos vendidos") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1, size = 10)) +
+  scale_y_continuous(limits = c(0, 15)) 
+```
+
         
 
     3)  Si consideramos la categoría de PESCADO. Cuáles son los 5
