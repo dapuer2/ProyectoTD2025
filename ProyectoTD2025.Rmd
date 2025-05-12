@@ -3,10 +3,11 @@ title: "ProyectoTD2025    -    Grupo C"
 author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   html_notebook:
     echo: true
     number_sections: true
@@ -15,11 +16,10 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -83,7 +83,7 @@ if (!require("pacman")) {
 
 ```
 
-## 1.1 Carga de librerías necesarias para el análisis
+## 2. Carga de librerías necesarias para el análisis
 
 Inicialmente, se cargan los paquetes necesarios para cada una de las
 fases del proyecto. Para hacerlo de forma más eficiente y ordenada, se
@@ -107,9 +107,9 @@ p_load(
   )
 ```
 
-## 1.2 Extracción de datos del fichero de texto
+## 3. Extracción de datos del fichero de texto
 
-### 1.2.1 Recopilación de ficheros .txt
+### 3.1 Recopilación de ficheros .txt
 
 Con el propósito de simplificar el procesamiento de los datos contenidos
 en los tickets de Mercadona, se ha optado por utilizar un código en R
@@ -134,7 +134,7 @@ elementos.carpeta <- list.files(path = rutadatos,
 
 ```
 
-### 1.2.2 Recopilación de los datos
+### 3.2 Recopilación de los datos
 
 Una vez que todos los tickets han sido recolectados y transformados en
 texto plano, es momento de almacenar la información contenida en ellos.
@@ -146,7 +146,7 @@ Para ello, hemos realizado 2 data.frames de trabajo:
 -   ***df.productos***: Este data frame recopila la información de cada
     producto comprado y su precio
 
-#### 1.2.2.1 Recogida de datos generales del ticket
+#### 3.2.1 Recogida de datos generales del ticket
 
 Las variables creadas y almacenadas para esta tabla con datos más
 generales es la siguiente:
@@ -296,7 +296,7 @@ precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio 
 }
 ```
 
-#### 1.2.2.1 Recogida de datos de los productos del ticket
+#### 3.2.2 Recogida de datos de los productos del ticket
 
 Las variables creadas y almacenadas para la tabla de los productos es
 la siguiente:
@@ -439,10 +439,10 @@ df.productos <- df.productos %>%
 
 ```
 
-#### 1.2.2.2 Tablas para facilitar la información que contienen los tickets
+#### 3.2.3 Tablas para facilitar la información que contienen los tickets
 
 
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE}
 # Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
 
 ## TABLA 1: Resumen general de variables
@@ -537,7 +537,7 @@ knitr::kable(
 # La tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
 ```
 
-## 1.3 Preguntas propuestas
+## 3. Preguntas propuestas
 
 -   Estas son las preguntas que tenemos que responder mediante el uso de
     gráficos:
@@ -636,7 +636,7 @@ En la grafica podemos observar los productos mas vendidos de la categoria pescad
         por kilo de las bananas y los plátanos en los tickets
         disponibles, a lo largo del tiempo.
 
-```{r}
+```{r, echo=FALSE}
 # Visualizando los datos en el data frame en el cual se encuentra cada uno de los productos, no hemos encontrado ninguna compra de platanos o bananas o algo que haga referencia a ellos. Por este motivo, ha sido imposible llevar a cabo una representaciñon de la evolución del kilo de bananas y platanos a lo largo del tiempo. No obstante, este es el código que se debería utilizar en el caso de que si que se hubieran llevado a cabo compras de estos productos.
 
 # 1) Filtramos los productos Banana y Plátano
@@ -843,33 +843,12 @@ ggplot(productos_rango1, aes(x = precio.producto,
   theme_minimal()
 ```
 
-```{r,fig.align="center",echo=FALSE}
-# Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
-productos_rango1 <- df.productos[df.productos$precio.producto >= 12.50 & 
-                                         df.productos$precio.producto <= 15, ]
-
-productos_rango1 = head(productos_rango1,-2)
-
-# Creamos un gráfico de barras horizontales para mostrar los productos en el 
-#rango de precios especificado
-ggplot(productos_rango1, aes(x = precio.producto, 
-                            y = reorder(nombre.producto, precio.producto))) +
-  geom_bar(stat = "identity", fill = "#FF6F61") +  # Cambiamos el color de las barras
-  geom_text(aes(label = sprintf("%.0f", precio.producto)),
-            hjust = -0.2, color = "black") +  # Agregamos etiquetas con el precio
-  labs(title = "Productos más caros",
-       x = "Precio",
-       y = "Producto",
-       subtitle = "Cantidad de productos y su precio") +  # Añadimos subtítulo
-  theme_minimal()
-```
-
 
 Por tanto, como podemos observar el alimento comprado más caro es el
 bogavante crudo el cual solo se ha comprado 1 vez, el cual su precio es
 de casi 15€.
 
-# 1.4 Conclusiones
+# 4. Conclusiones
 
 Para concluir, nos gustaría expresar los beneficios que nos ha supuesto realizar este trabajo.
 La resolución de las preguntas planteadas sobre los tickets de Mercadona y la extracción de las
