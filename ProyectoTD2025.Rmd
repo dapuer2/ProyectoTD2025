@@ -327,18 +327,17 @@ df.productos <- data.frame()
 for (d in elementos.carpeta) {
   
   contenido <- readLines(d,
-                       encoding = 'utf-8',
-                       warn = FALSE)
+                         encoding = 'utf-8',
+                         warn = FALSE)
   
   # Extraemos información del ticket
   num_factura_simpl <- gsub("FACTURA SIMPLIFICADA: ", "", contenido[8])
   fecha_compra <- dmy(unlist(strsplit(contenido[6], " "))[1])
   
-  # Identificamos la sección de productos (después de "Importe" y antes de "TOTAL")
+  # Identificamos la sección de productos
   inicio_productos <- grep("Importe", contenido) + 1
   fin_productos <- grep("TOTAL(€))", contenido) - 1
   
-  # Si no encontramos el patrón exacto, buscamos alternativas
   if(length(fin_productos) == 0) {
     fin_productos <- grep("^TOTAL$", contenido)[1] - 1
     if(is.na(fin_productos)) {
@@ -347,74 +346,95 @@ for (d in elementos.carpeta) {
   }
   
   productos <- contenido[inicio_productos:fin_productos]
+  productos <- trimws(productos)
+  productos <- productos[productos != ""]
   
-  # Eliminamos líneas de PARKING si existen
-  patron_parking <- "PARKING"
-  lineas_parking <- grep(patron_parking, productos)
-  if(length(lineas_parking) > 0) {
-    productos <- productos[-lineas_parking]
-  }
-  
-  # Eliminamos líneas de DONACIÓN si existen
-  patron_donacion <- "DONACIÓN"
-  lineas_donacion <- grep(patron_donacion, productos)
-  if(length(lineas_donacion) > 0) {
-    productos <- productos[-lineas_donacion]
-  }
+  # Eliminar líneas irrelevantes
+  productos <- productos[!grepl("PARKING|DONACIÓN", productos, ignore.case = TRUE)]
   
   # Procesamos los productos
   i <- 1
   while(i <= length(productos)) {
-    # Inicializamos variables
     cantidad <- NA
     nombre_producto <- NA
     precio_producto <- NA
     
-    # Patrón 1: Cantidad (1 línea), Nombre (1 línea), Precio (1 línea)
-    if(grepl("^\\d+$", productos[i])) {
+    # PATRÓN PESO (5 líneas): cantidad, nombre, peso, €/kg, total
+    if((i + 4 <= length(productos)) &&
+       grepl("^\\d+$", productos[i]) &&
+       grepl("^[A-Za-zÁÉÍÓÚÜÑ ]+$", productos[i + 1]) &&
+       grepl("^\\d+,\\d+ kg$", productos[i + 2]) &&
+       grepl("^\\d+,\\d+ €/kg$", productos[i + 3]) &&
+       grepl("^\\d+,\\d+$", productos[i + 4])) {
+      
       cantidad <- as.numeric(productos[i])
-      nombre_producto <- productos[i+1]
-      precio_producto <- as.numeric(gsub(",", ".", productos[i+2]))
+      nombre_producto <- trimws(productos[i + 1])
+      precio_producto <- as.numeric(gsub(",", ".", productos[i + 4]))
+      i <- i + 5
+    }
+    
+    # PATRÓN 1: cantidad, nombre, precio en líneas separadas
+    else if(grepl("^\\d+$", productos[i]) && (i + 2 <= length(productos))) {
+      cantidad <- as.numeric(productos[i])
+      nombre_producto <- productos[i + 1]
+      precio_producto <- as.numeric(gsub(",", ".", productos[i + 2]))
       i <- i + 3
     } 
-    # Patrón 2: Línea combinada (cantidad + nombre + precio)
+    
+    # PATRÓN 2: todo en una línea (ej: "1 PAN BARRA 0,55")
     else if(grepl("^\\d+ ", productos[i])) {
       elementos <- unlist(strsplit(productos[i], " "))
       cantidad <- as.numeric(elementos[1])
-      nombre_producto <- paste(elementos[-length(elementos)][-1], collapse = " ")
+      nombre_producto <- paste(elementos[2:(length(elementos) - 1)], collapse = " ")
       precio_producto <- as.numeric(gsub(",", ".", elementos[length(elementos)]))
       i <- i + 1
     }
-    # Patrón 3: Productos con peso (simplificado - solo tomamos el precio total)
-    else if(grepl("[0-9],", productos[i]) && grepl("€", productos[i+1])) {
-      nombre_producto <- productos[i]
-      datos_peso <- unlist(strsplit(productos[i+1], " "))
-      precio_producto <- as.numeric(gsub(",", ".", datos_peso[5])) # Tomamos el precio total
-      cantidad <- 1  
+
+        # PATRÓN 3: nombre, luego precio
+    else if((i + 1 <= length(productos)) &&
+            grepl("[a-zA-Z]", productos[i]) &&
+            !grepl("TOTAL|TARJETA|IVA|CUOTA|BASE IMPONIBLE|€/kg|kg|g|litro|unidad|u\\.", productos[i], ignore.case = TRUE) &&
+            grepl("[0-9]+,[0-9]+", productos[i + 1]) &&
+            !grepl("TOTAL|TARJETA|IVA|CUOTA|BASE IMPONIBLE|€/kg|kg|g|litro|unidad|u\\.", productos[i + 1], ignore.case = TRUE)) {
+      
+      nombre_producto <- trimws(productos[i])
+      precio_texto <- productos[i + 1]
+      precio_extraido <- str_extract(precio_texto, "[0-9]+,[0-9]+")
+      
+      if (!is.na(precio_extraido)) {
+        precio_producto <- as.numeric(gsub(",", ".", precio_extraido))
+        cantidad <- 1
+      }
+      
       i <- i + 2
-    } 
-    # Si no coincide con ningún patrón, avanzamos
+    }
+
+    # Ningún patrón coincide
     else {
       i <- i + 1
       next
     }
     
-    # Añadimos el producto al dataframe
+    # Añadimos al dataframe si hay nombre válido
     if(!is.na(nombre_producto)) {
       fila <- data.frame(
         numero.factura = num_factura_simpl,
         fecha = fecha_compra,
-        cantidad = as.numeric(cantidad),
+        cantidad = cantidad,
         nombre.producto = nombre_producto,
-        precio.producto = as.numeric(precio_producto),
+        precio.producto = precio_producto,
         stringsAsFactors = FALSE
       )
       df.productos <- bind_rows(df.productos, fila)
     }
   }
 }
-# Limpieza final de los datos
-df.productos <- df.productos %>%filter(!is.na(nombre.producto), !is.na(precio.producto))
+
+# Limpieza final
+df.productos <- df.productos %>%
+  filter(!is.na(nombre.producto), !is.na(precio.producto))
+
+
 
 
 ```
