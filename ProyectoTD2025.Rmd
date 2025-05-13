@@ -434,6 +434,97 @@ df.productos <- df.productos %>%
   filter(!is.na(nombre.producto), !is.na(precio.producto))
 ```
 
+Consideramos también la clasificació por categoría de los distintos productos almacenados en el ***df.productos***.
+
+```{r}
+
+df.productos <- df.productos %>%
+  mutate(categoria = case_when(
+    # FRUTAS Y VERDURAS
+    nombre.producto %in% c("PATATA 3 KG", "TOMATE ENTERO PELADO", "AJO SECO 250 G", 
+                           "CHAMPIÑÓN GRANDE BAN", "MANZANA GOLDEN BOLSA", "ESP VERDE FINO",
+                           "SETA BANDEJA", "CHAMPIÑON PORTOBELLO", "FRESÓN", "AGUACATE BANDEJA",
+                           "MANDARINA", "PLATANO", "ALCACHOFA", "HABAS", "MANDARINA HOJA",
+                           "BURGER BERENJENA", "BANANA", "CALABACIN VERDE", "COLIFLOR",
+                           "JUDÍA PLANA", "KIWI VERDE", "CEBOLLA 2 KG", "RABANITOS",
+                           "CEBOLLA TIERNA", "TOMATE NEGRO", "MANGO", "TOMATE CANARIO", "GARROFON", "TOMATE TRITURADO", "TOMATE TRITURADO", "GUISANTE FINO", "ZANAHORIA BOLSA", "PEPINO", "UVA BLANCA S/SEM") ~ "FRUTAS Y VERDURAS",
+    
+    # PESCADO
+    nombre.producto %in% c("MEJILLON", "PATÉ ATÚN 3X80", "MARINA ALTA", "ALBONDIGAS DE BACALA",
+                           "BERBERECHO", "LOMO BACAL P/S", "ESCALOPIN SALMON", "BACALAO AHUMADO", "TIBURON", "ATÚN CLARO OLIVA PK6
+") ~ "PESCADO",
+    
+    # CARNES Y EMBUTIDOS
+    nombre.producto %in% c("CHULETA AGUJA", "CH. PALO RIÑONAD", "MORCILLA CEB. OREADA",
+                           "1/2 CONEJO TROCEADO", "F. PLANCHA/GUISAR", "CHULETON", "CHORIZO",
+                           "LONGANIZA DE PAYES", "LONGANIZA PASCUA", "EMBUTIDO LONCHEADO",
+                           "SALCHICHÓN BELLOTA", "JAMON CEBO IBERICO", "JAMÓN C FL PACK",
+                           "TACO BACON", "HAMBURGUESA DE LOMO", "ALAS PARTIDAS CERT",
+                           "COSTILLA CARNOSA", "GARRÓN JAMON SERRANO", "SALCHICHON CEBO LONC",
+                           "JAMÓN COCIDO 90%", "CHORIZO PICANTE", "PANCETA", "POLLO ENTERO LIMPIO", "ALBONDIGAS 24 UNID.
+") ~ "CARNES Y EMBUTIDOS",
+    
+    # LÁCTEOS Y QUESOS
+    nombre.producto %in% c("Q VIEJO TOSTADO", "QUESO LONCHAS OVEJA", "LECHE ENTERA P6",
+                           "LCASEI FRESA X", "ACT O% NAT ED", "TARTA QUESO", 
+                           "Q RALLADO FUNDIR", "Q. UNTAR SUAVE", "GRIEGO STRACCIAT.P-6",
+                           "ACT O% NAT ED 8", "NATILLA CHOCOLATE X4", "NATA 15% SIN LACTOSA", "QUESO AÑEJO ROMERO", "Q. VIEJO INTENSO", "Q. RALLADO EMMENTAL", "QUESO RALLADO PIZZA", "QUESO FRESCO CABRA
+", "LECHE DESNAT. CALCIO
+") ~ "LÁCTEOS Y QUESOS",
+    
+    # PANADERÍA Y REPOSTERÍA
+    nombre.producto %in% c("C 0,0 TOSTADA P-6", "PAT. CLASSICAS", "MINI EMP PISTO P6",
+                           "M.CROISS MANTEQUILLA", "PAN 51% INTEGRAL 5UN", "MINI SALADAS",
+                           "GALL.MARIA INTEGRAL", "GALLETA MARIA", "BARRITAS CHIPS AHOY",
+                           "CONOS", "TRIGO SNACKS", "PAN CRISTAL 4 UDS", "PAN REDONDO SEMILLAS") ~ "PANADERÍA Y REPOSTERÍA",
+    
+    # LEGUMBRES Y CEREALES
+    nombre.producto %in% c("GARBANZO M.COCIDO", "ARROZ INTEGRAL", "COPOS DE AVENA",
+                           "QUINOA") ~ "LEGUMBRES Y CEREALES",
+    
+    # FRUTOS SECOS
+    nombre.producto %in% c("AVELLANA TOSTADA", "CACAHUETE SIN SAL", "NUEZ CASCARA NATURAL", "ANACARDO NATURAL") ~ "FRUTOS SECOS",
+    
+    # ALIMENTOS PREPARADOS
+    nombre.producto %in% c("TOFU", "SOJA NATURAL CAJA", "BURGER BERENJENA", 
+                           "PIZZA ATUN BACON", "PIZZA MEDITTERRANEA") ~ "ALIMENTOS PREPARADOS",
+    
+    # BEBIDAS
+    nombre.producto %in% c("C. ESPECIAL BOT", "CERV TOSTADA", "CERV PACK", "RIBERA ROBLE",
+                           "ICE TEA MELOCOTÓN", "CERVEZA", "ISOTÓNICA LIMÓN
+", "CERV. RADLER 0,0", "AGUA MINERAL") ~ "BEBIDAS",
+    
+    # CONDIMENTOS Y SALSAS
+    nombre.producto %in% c("SALSA MIEL Y MOSTAZA", "SALSA AGRIDULCE", "MIEL NARANJO DOSIF.",
+                           "MAYONESA L LIGHT", "VIRGEN EXTRA") ~ "CONDIMENTOS Y SALSAS",
+    
+    # PRODUCTOS DE LIMPIEZA
+    nombre.producto %in% c("LAVAVAJILLAS QUANTUM", "ABRILLANTADOR VAJILL", "LAVAVAJILLA TODO 1",
+                           "LAVAVAJILLA TODO", "LAVAVAJ. TODO EN", "ARIEL CÁPSULAS",
+                           "FAIRY ORIGINAL 870ML", "LIMPIAHOGAR MULTI", "LIMPIADOR MOPAS SPRA",
+                           "SAL LAVAVAJILLAS", "REFILL DERMO", "BARREÑO", "MULTIUSOS", "FRIEGASUELOS PINO") ~ "PRODUCTOS DE LIMPIEZA",
+    
+    # HIGIENE PERSONAL
+    nombre.producto %in% c("TAMPÓN C. PEARL REGU", "ROLLO HOGAR DOBLE", "PAÑUELO CAJA",
+                           "TOA.BEBE FRESCAS", "CHAMPÚ H&S 2 EN", "TOALLITAS ANTITRANSF") ~ "HIGIENE PERSONAL",
+    
+    # OTROS ALIMENTOS
+    nombre.producto %in% c("CAFE MOLIDO NATURAL", "CARAMELO REGALIZ", "PALOMITAS SAL PACK",
+                           "MELOCOTON ALM PACK") ~ "OTROS ALIMENTOS",
+    
+    # PRODUCTOS VARIOS
+    nombre.producto %in% c("GUANTE RESIS.LEJÍA M", "GUANTE FLOCADO PEQU", "PERF.CEJAS MICRO",
+                           "PERF.LABIOS", "PERF.AUT.LAB", "BLUSH SATÍN", "FIT ME", "CORRECTOR HYDRA-VI",
+                           "PERF.AUT.OJOS", "BARRA COLOR BALM", "PERF. OJOS WATER", "BLUE II SLALOM",
+                           "P. COLORCOR") ~ "PRODUCTOS VARIOS",
+    
+    # Para cualquier producto no clasificado
+    TRUE ~ "OTROS"
+  ))
+
+```
+
+
 #### 3.2.3 Tablas para facilitar la información que contienen los tickets
 
 
