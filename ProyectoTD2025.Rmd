@@ -3,10 +3,11 @@ title: "ProyectoTD2025    -    Grupo C"
 author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   html_notebook:
     echo: true
     number_sections: true
@@ -15,11 +16,10 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -537,8 +537,7 @@ TABLA 1: Resumen general de variables
 
 ## TABLA 1: Resumen general de variables
 
-library(gt)
-library(scales)
+library(kableExtra)
 
 resumen_variable <- function(var) {
   tipo <- class(var)[1]
@@ -580,46 +579,21 @@ resumen_variables <- resumen %>%
       tipo == "Period" ~ "Hora",
       TRUE ~ tipo
     ),
-    topFrac = percent(topFrac, accuracy = 0.1),
-    missFrac = percent(missFrac, accuracy = 0.1)
+    topFrac = scales::percent(topFrac, accuracy = 0.1),
+    missFrac = scales::percent(missFrac, accuracy = 0.1)
   ) %>%
-  gt() %>%
-  tab_header(
-    title = "Resumen General de Variables",
-    subtitle = "Análisis descriptivo de las variables en los tickets"
+  kable(
+    caption = "Resumen General de Variables",
+    booktabs = TRUE,
+    align = c("l", "l", "c", "l", "c", "c", "c"),
+    col.names = c("Variable", "Tipo", "Niveles Ún.", "Valor Más Frec.", 
+                  "Frec.", "% Total", "Faltantes (%)")
   ) %>%
-  cols_label(
-    Variable = "Variable",
-    tipo = "Tipo",
-    niveles = "Niveles Ún.",
-    topLevel = "Valor Más Frec.",
-    topCount = "Frec.",
-    topFrac = "% Total",
-    missFrac = "Faltantes (%)"
-  ) %>%
-  sub_missing(columns = everything(), missing_text = "-") %>%
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_column_labels()
-  ) %>%
-  tab_options(
-    table.width = pct(95),  # Reducir ligeramente el ancho
-    table.font.size = px(10),  # Fuente más pequeña
-    column_labels.font.size = px(11),  # Encabezados un poco más grandes
-    data_row.padding = px(3) # Menor espacio interno en celdas
-  ) %>%
-  cols_width(  # Ajustar ancho de columnas manualmente
-    Variable ~ px(120),
-    tipo ~ px(80),
-    niveles ~ px(70),
-    topLevel ~ px(100),
-    topCount ~ px(60),
-    topFrac ~ px(70),
-    missFrac ~ px(80)
-  ) %>%
-  tab_source_note("Fuente: Análisis de tickets electrónicos de Mercadona")
-
-resumen_variables %>% as_raw_html()
+  kable_styling(
+    latex_options = c("hold_position", "striped"),
+    full_width = FALSE,
+    font_size = 9
+  )
 
 resumen_variables
 ```
@@ -688,6 +662,7 @@ TABLA 3: Frecuencias de variables categóricas clave
 ## TABLA 3: Frecuencias de variables categóricas clave
 library(flextable)
 library(officer)
+library(scales)
 
 categoricas <- df.ticket %>%
   select_if(~ is.factor(.) || is.character(.)) %>%
