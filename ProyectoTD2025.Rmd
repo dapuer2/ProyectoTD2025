@@ -532,7 +532,7 @@ proporcionados por los tickets.
 
 TABLA 1: Resumen general de variables
 
-```{r, message=FALSE, warning=FALSE}
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
 
 
 ## TABLA 1: Resumen general de variables
@@ -591,11 +591,11 @@ resumen_variables <- resumen %>%
   cols_label(
     Variable = "Variable",
     tipo = "Tipo",
-    niveles = "Niveles Únicos",
-    topLevel = "Valor Más Frecuente",
-    topCount = "Frecuencia",
-    topFrac = "% del Total",
-    missFrac = "Valores Faltantes"
+    niveles = "Niveles Ún.",
+    topLevel = "Valor Más Frec.",
+    topCount = "Frec.",
+    topFrac = "% Total",
+    missFrac = "Faltantes (%)"
   ) %>%
   sub_missing(columns = everything(), missing_text = "-") %>%
   tab_style(
@@ -603,11 +603,23 @@ resumen_variables <- resumen %>%
     locations = cells_column_labels()
   ) %>%
   tab_options(
-    table.width = pct(100),
-    table.font.size = px(12),
-    data_row.padding = px(6)
+    table.width = pct(95),  # Reducir ligeramente el ancho
+    table.font.size = px(10),  # Fuente más pequeña
+    column_labels.font.size = px(11),  # Encabezados un poco más grandes
+    data_row.padding = px(3) # Menor espacio interno en celdas
+  ) %>%
+  cols_width(  # Ajustar ancho de columnas manualmente
+    Variable ~ px(120),
+    tipo ~ px(80),
+    niveles ~ px(70),
+    topLevel ~ px(100),
+    topCount ~ px(60),
+    topFrac ~ px(70),
+    missFrac ~ px(80)
   ) %>%
   tab_source_note("Fuente: Análisis de tickets electrónicos de Mercadona")
+
+resumen_variables %>% as_raw_html()
 
 resumen_variables
 ```
@@ -616,7 +628,7 @@ Vemos como la tabla 1 presenta un resumen de las variables contenidas en df.tick
 
 TABLA 2: Estadísticos de variables numéricas
 
-```{r configuracion_inicial, message=FALSE, warning=FALSE}
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
 ## TABLA 2: Estadísticos de variables numéricas
 
 library(gt)
@@ -672,7 +684,7 @@ Observamos como en la tabla 2 se muestran los principales estadísticos descript
 
 TABLA 3: Frecuencias de variables categóricas clave
 
-```{r, message=FALSE, warning=FALSE}
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
 ## TABLA 3: Frecuencias de variables categóricas clave
 library(flextable)
 library(officer)
