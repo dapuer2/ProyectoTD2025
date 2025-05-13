@@ -667,7 +667,7 @@ numericas <- numericas %>%
     defaultSorted = "Variable"
   )
 
-numericas_react
+numericas
 ```
 Observamos como en la tabla 2 se muestran los principales estadísticos descriptivos de las variables cuantitativas como el precio total del ticket, el IVA añadido y el precio sin IVA.
 
