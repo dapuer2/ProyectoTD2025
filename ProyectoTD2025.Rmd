@@ -436,7 +436,7 @@ df.productos <- df.productos %>%
 
 Consideramos también la clasificació por categoría de los distintos productos almacenados en el ***df.productos***.
 
-```{r, echo = FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 
 df.productos <- df.productos %>%
   mutate(categoria = case_when(
@@ -532,7 +532,7 @@ proporcionados por los tickets.
 
 TABLA 1: Resumen general de variables
 
-```{r, echo = FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 
 ## TABLA 1: Resumen general de variables
 library(gt)
@@ -614,7 +614,7 @@ Vemos como la tabla 1 presenta un resumen de las variables contenidas en df.tick
 
 TABLA 2: Estadísticos de variables numéricas
 
-```{r, echo = FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 ## TABLA 2: Estadísticos de variables numéricas
 library(reactable)
 
@@ -673,7 +673,7 @@ Observamos como en la tabla 2 se muestran los principales estadísticos descript
 
 TABLA 3: Frecuencias de variables categóricas clave
 
-```{r, echo = FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 ## TABLA 3: Frecuencias de variables categóricas clave
 library(flextable)
 library(officer)
