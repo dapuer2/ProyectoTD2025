@@ -653,64 +653,42 @@ En esta gráfica podemos observar los productos más vendidos por unidades. El p
         cada uno de estos productos?
         
 ```{r,echo=FALSE,fig.align="center"}
-# 1) Definimos un vector con todas las frutas y verduras registradas:
 
-frutas_verduras = c(
-    "ROJA ACIDULCE BOLSA",        # probablemente manzana o similar
-    "BURGER BERENJENA",           # berenjena
-    "PATATA 3 KG",                # patata
-    "TOMATE ENTERO PELADO",       # tomate
-    "AJO SECO 250 G",             # ajo
-    "CHAMPIÑÓN GRANDE BAN",       # champiñón
-    "NUEZ CASCARA NATURAL",       # nuez
-    "MANZANA GOLDEN BOLSA",       # manzana
-    "ESP VERDE FINO",             # espárrago
-    "SETA BANDEJA",               # seta
-    "CHAMPIÑON PORTOBELLO",       # champiñón
-    "FRESÓN",                     # fresón
-    "AGUACATE BANDEJA",           # aguacate
-    "GARROFON",
-    "AJOS TIERNOS",
-    "TOMATE TRITURADO"
-    )
-
-# 2) Iniciamos la búsqueda de los 5 productos de la categoría de FRUTAS Y 
+# 1) Iniciamos la búsqueda de los 5 productos de la categoría de FRUTAS Y 
 #    VERDURAS más vendidos, y el cálculo de los kilos vendidos de cada uno de 
 #    ellos:
 
-df.productos %>%
-  filter(nombre.producto %in% frutas_verduras) %>% # filtramos los productos
+top_frutas_verduras <- df.productos %>%
+  filter(categoria == "FRUTAS Y VERDURAS") %>% # filtramos los productos
   group_by(nombre.producto) %>% # agrupamos los datos por nombre de producto
   summarise(kilos_vendidos = sum(cantidad, na.rm = TRUE)) %>% # sumamos la cantidad por producto, ignorando NAs
   arrange(desc(kilos_vendidos)) %>% # ordenamos los productos de mayor a menor cantidad
   slice_head(n = 5) # seleccionamos los 5 productos con más cantidad
 
+top_frutas_verduras
+
 ```
 
 ```{r}
-#Hacemos un data.frame con los datos de la tabla de arriba
-top_frutas_verduras <- data.frame(
-  nombre.producto = c("TOMATE TRITURADO", "NUEZ CASCARA NATURAL", 
-                      "AGUACATE BANDEJA", "AJO SECO 250 G", "ESP VERDE FINO"),
-  kilos_vendidos = c(12, 7, 5, 5, 5)
-)
 
-# Hacemos la gráfica
+# 2) Representación gráfica:
+
 ggplot(top_frutas_verduras, aes(x = reorder(nombre.producto, -kilos_vendidos), 
                                y = kilos_vendidos)) +
-  geom_col(fill = "#4CAF50", width = 0.7) +  # Usamos geom_col para valores explícitos
+  geom_col(fill = "#E0B0FF", width = 0.7) +
   geom_text(aes(label = kilos_vendidos), 
             position = position_dodge(width = 0.9), 
             vjust = -0.5, 
             size = 4,
             fontface = "bold") +
-  labs(title = "TOP 5 - Frutas y Verduras más vendidas",
+  labs(title = "TOP 5 - Frutas y verduras más vendidas",
        subtitle = "Cantidad vendida en kilos",
        x = "",
        y = "Kilos vendidos") +
   theme_minimal(base_size = 12) +
   theme(axis.text.x = element_text(angle = 25, hjust = 1, size = 10)) +
-  scale_y_continuous(limits = c(0, 15)) 
+  scale_y_continuous(limits = c(0, max(top_frutas_verduras$kilos_vendidos) * 1.2))
+
 ```
 
         
