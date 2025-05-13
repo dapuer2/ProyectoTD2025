@@ -3,11 +3,10 @@ title: "ProyectoTD2025    -    Grupo C"
 author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
 date: "2025-04-08"
 output:
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   html_notebook:
     echo: true
     number_sections: true
@@ -16,10 +15,11 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -321,7 +321,6 @@ el proyecto en un futuro sea fácil su entendimiento y rápida la puesta
 en marcha.
 
 ```{r, echo= FALSE, message=FALSE, warning=FALSE}
-
 df.productos <- data.frame()
 
 for (d in elementos.carpeta) {
@@ -433,10 +432,6 @@ for (d in elementos.carpeta) {
 # Limpieza final
 df.productos <- df.productos %>%
   filter(!is.na(nombre.producto), !is.na(precio.producto))
-
-
-
-
 ```
 
 #### 3.2.3 Tablas para facilitar la información que contienen los tickets
@@ -781,11 +776,21 @@ A partir de esta gráfica se puede ver que  la media da 46,31€ pese a que la m
 ```{r,echo=FALSE,fig.align="center"}
 # Debemos calcular el valor medio de la columna "iva.anayadido":
 
-df.ticket %>%
+iva_medio <- df.ticket %>%
   summarise(iva_promedio = mean(iva_anyadido, na.rm = TRUE))
 
 ## NO consideramos los valores NA (faltantes)
 
+# Representación:
+
+ggplot(iva_medio, aes(x = 1, y = iva_promedio)) +
+  geom_text(aes(label = paste0("IVA Promedio: ", round(iva_promedio, 2), " €")),
+            size = 8, fontface = "bold", color = "#2E86C1") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#EAF2F8", color = NA),
+    plot.margin = margin(40, 40, 40, 40)
+  )
 ```
     
 
@@ -875,7 +880,7 @@ Por tanto, como podemos observar el alimento comprado más caro es el
 bogavante crudo el cual solo se ha comprado 1 vez, el cual su precio es
 de casi 15€.
 
-# 4. Conclusiones
+## 4. Conclusiones
 
 Para concluir, nos gustaría expresar los beneficios que nos ha supuesto realizar este trabajo.
 La resolución de las preguntas planteadas sobre los tickets de Mercadona y la extracción de las
