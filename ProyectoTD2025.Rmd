@@ -535,6 +535,7 @@ TABLA 1: Resumen general de variables
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 
 ## TABLA 1: Resumen general de variables
+
 library(gt)
 library(scales)
 
@@ -595,7 +596,7 @@ resumen_variables <- resumen %>%
     topFrac = "% del Total",
     missFrac = "Valores Faltantes"
   ) %>%
-  fmt_missing(columns = everything(), missing_text = "-") %>%
+  sub_missing(columns = everything(), missing_text = "-") %>%
   tab_style(
     style = cell_text(weight = "bold"),
     locations = cells_column_labels()
@@ -616,7 +617,8 @@ TABLA 2: Estadísticos de variables numéricas
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 ## TABLA 2: Estadísticos de variables numéricas
-library(reactable)
+
+library(gt)
 
 numericas <- df.ticket %>%
   select(where(is.numeric)) %>%
@@ -633,41 +635,37 @@ numericas <- df.ticket %>%
   )) %>%
   pivot_longer(cols = everything(),
                names_to = c("Variable", ".value"),
-               names_sep = "_")
-
-numericas <- numericas %>%
+               names_sep = "_") %>%
   mutate(
     Variable = str_to_title(gsub("\\.", " ", Variable)),
-    across(where(is.numeric), ~round(., 2))
+    across(where(is.numeric), round, 2)
   ) %>%
-  reactable(
-    columns = list(
-      Variable = colDef(name = "Variable"),
-      Media = colDef(name = "Media", format = colFormat(separators = TRUE, digits = 2)),
-      Mediana = colDef(name = "Mediana", format = colFormat(separators = TRUE, digits = 2)),
-      DesvEst = colDef(name = "Desv. Est.", format = colFormat(separators = TRUE, digits = 2)),
-      Min = colDef(name = "Mínimo", format = colFormat(separators = TRUE, digits = 2)),
-      Max = colDef(name = "Máximo", format = colFormat(separators = TRUE, digits = 2))
-    ),
-    defaultPageSize = 5,
-    searchable = TRUE,
-    bordered = TRUE,
-    highlight = TRUE,
-    striped = TRUE,
-    defaultColDef = colDef(
-      headerStyle = list(background = "#f7f7f8", fontWeight = "bold")
-    ),
-    theme = reactableTheme(
-      borderColor = "#dfe2e5",
-      stripedColor = "#f6f8fa",
-      highlightColor = "#e6f7ff",
-      cellPadding = "8px 12px"
-    ),
-    fullWidth = TRUE,
-    defaultSorted = "Variable"
+  gt() %>%
+  tab_header(
+    title = "Estadísticos Descriptivos de Variables Cuantitativas",
+    subtitle = "Tabla 2"
+  ) %>%
+  cols_label(
+    Variable = "Variable",
+    Media = "Media",
+    Mediana = "Mediana",
+    DesvEst = "Desv. Est.",
+    Min = "Mínimo",
+    Max = "Máximo"
+  ) %>%
+  fmt_number(columns = where(is.numeric), decimals = 2) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) %>%
+  tab_options(
+    table.width = pct(100),
+    table.font.size = px(12),
+    data_row.padding = px(6)
   )
 
 numericas
+
 ```
 Observamos como en la tabla 2 se muestran los principales estadísticos descriptivos de las variables cuantitativas como el precio total del ticket, el IVA añadido y el precio sin IVA.
 
