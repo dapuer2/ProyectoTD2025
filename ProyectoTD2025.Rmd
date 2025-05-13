@@ -818,7 +818,7 @@ En la grafica podemos observar los productos mas vendidos de la categoria pescad
 ```{r, echo=FALSE,message=FALSE,warning=FALSE,grafico4,fig.width=6, fig.height=4,fig.align="center"}
 # 1) Filtramos los productos Banana y Plátano
 frutas <- df.productos %>%
-  filter(nombre.producto %in% c("BANANA", "PLATANO CANARIO",""))
+  filter(nombre.producto %in% c("BANANA", "PLATANO"))
 
 # 2) Calculamos el precio por kilo
 frutas <- frutas %>%
@@ -833,7 +833,7 @@ ggplot(frutas, aes(x = fecha, y = precio_por_kilo, color = nombre.producto, grou
        y = "Precio por kilo (€)") +
   theme_minimal()
 ```
-
+El diagrama ilustra el cambio en el costo por kilogramo de bananas y plátanos desde mediados de diciembre hasta comienzos de febrero.  El costo de los plátanos (línea azul) sufre una fluctuación significativa, alcanzando un máximo a mediados de diciembre, seguido de un descenso.  Por otro lado, el precio de las bananas (línea roja) inicia con un costo más bajo, incrementándose al final de diciembre y permaneciendo más constante en enero.  Estas variaciones pueden atribuirse a elementos de oferta y demanda durante ese lapso.
 
     5)  ¿Cuál es la procedencia de los tickets ?¿Qué ciudad/pueblo tiene
         un mayor número de tickets?
