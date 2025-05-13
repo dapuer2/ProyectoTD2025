@@ -436,7 +436,7 @@ df.productos <- df.productos %>%
 
 Consideramos también la clasificació por categoría de los distintos productos almacenados en el ***df.productos***.
 
-```{r}
+```{r, echo = FALSE}
 
 df.productos <- df.productos %>%
   mutate(categoria = case_when(
@@ -614,7 +614,7 @@ Vemos como la tabla 1 presenta un resumen de las variables contenidas en df.tick
 
 TABLA 2: Estadísticos de variables numéricas
 
-```{r}
+```{r, echo = FALSE}
 ## TABLA 2: Estadísticos de variables numéricas
 library(reactable)
 
@@ -673,7 +673,7 @@ Observamos como en la tabla 2 se muestran los principales estadísticos descript
 
 TABLA 3: Frecuencias de variables categóricas clave
 
-```{r}
+```{r, echo = FALSE}
 ## TABLA 3: Frecuencias de variables categóricas clave
 library(flextable)
 library(officer)
@@ -774,7 +774,7 @@ top_frutas_verduras
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 
 # 2) Representación gráfica:
 
