@@ -453,8 +453,8 @@ df.productos <- df.productos %>%
                            "CEBOLLA TIERNA", "TOMATE NEGRO", "MANGO", "TOMATE CANARIO", "GARROFON", "TOMATE TRITURADO", "TOMATE TRITURADO", "GUISANTE FINO", "ZANAHORIA BOLSA", "PEPINO", "UVA BLANCA S/SEM") ~ "FRUTAS Y VERDURAS",
     
     # PESCADO
-    nombre.producto %in% c("MEJILLON", "PATÉ ATÚN 3X80", "MARINA ALTA", "ALBONDIGAS DE BACALA",
-                           "BERBERECHO", "LOMO BACAL P/S", "ESCALOPIN SALMON", "BACALAO AHUMADO", "TIBURON", "ATÚN CLARO OLIVA PK6
+    nombre.producto %in% c("MEJILLON", "PATÉ ATÚN 3X80", "BERBERECHO", "LOMO BACAL P/S", 
+                           "ESCALOPIN SALMON", "BACALAO AHUMADO", "ATÚN CLARO OLIVA PK6", "PORCIONES BACALAO
 ") ~ "PESCADO",
     
     # CARNES Y EMBUTIDOS
@@ -786,15 +786,10 @@ ggplot(top_frutas_verduras, aes(x = reorder(nombre.producto, -kilos_vendidos),
         uno de estos productos ?
         
 ```{r,echo=FALSE,grafico3, fig.width=6, fig.height=4,fig.align="center"}
-# 1) Creamos un vector con los productos de la categoría PESCADO
-productos_pescado <- c("ESCALOPIN SALMON", "BERBERECHO", "ATÚN CLARO OLIVA PK6", "BACALAO AHUMADO", "PORCIONES BACALAO", "ATÚN CLARO GIRAS PK6", "SALMÓN AHUMADO", "SARDINA AHUMADA")
 
-# 2) Filtramos los productos de la categoría PESCADO
-pescado <- df.productos %>%
-  filter(nombre.producto %in% productos_pescado)
-
-# 3) Agrupamos por producto y sumamos el total de kilos vendidos
-top_pescado <- pescado %>%
+# 1) Filtramos los productos de la categoría PESCADO, agrupamos por producto y sumamos el total de kilos vendidos
+top_pescado <- df.productos %>%
+  filter(categoria == "PESCADO") %>% # Filtramos la categoria PESCADO
   group_by(nombre.producto) %>% # Agrupamos los datos en función del producto
   summarise(Kilos_Vendidos = sum(cantidad, na.rm = TRUE)) %>% # Sumamos la cantidad de cada producto
   arrange(desc(Kilos_Vendidos)) %>% # Aplicamos un orden descendente
@@ -802,14 +797,16 @@ top_pescado <- pescado %>%
 
 print(top_pescado)
 
-# 4) Representamos los resultados en un gráfico de barras
+# 2) Representamos los resultados en un gráfico de barras
 ggplot(top_pescado, aes(x = reorder(nombre.producto, -Kilos_Vendidos), y = Kilos_Vendidos)) +
   geom_col(fill = "violet") + # Color de las barras
   geom_text(aes(label = Kilos_Vendidos), vjust = -0.3) + # Añadimos etiquetas con los valores
   labs(title = "Top 5 productos más vendidos en PESCADO", x = "Producto", y = "Kilos Vendidos") + # Títulos
-  theme_minimal() # Aplicamos estilo minimalista
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1, size = 10)) +
+  scale_y_continuous(limits = c(0, max(top_frutas_verduras$kilos_vendidos) * 1.2))
 ```
-En la grafica podemos observar los productos mas vendidos de la categoria pescado y el total vendido en kilos de cada uno de ellos. En primer lugar, el escalopín de salmón lidera con 6 kilos vendidos, seguido por el berberecho con 3 kilos. Los productos atún claro en aceite de oliva, bacalao ahumado y porciones de bacalao comparten la misma cantidad de ventas, 2 kilos cada uno.
+El diagrama indica que el mejillón es el producto más comercializado en la categoría de pescado, con 7 kilos, siendo el escalopín de salmón el más cercano con 6 kilos. Productos como el berberecho, el atún claro en oliva y el bacalao ahumado tienen ventas más bajas, con 3 y 2 kilos, respectivamente. Esto sugiere una evidente inclinación hacia productos marinos asequibles y sencillos de ingerir, como los mejillones y el salmón.
 
     4)  Muestra mediante un gráfico de líneas como ha variado el precio
         por kilo de las bananas y los plátanos en los tickets
