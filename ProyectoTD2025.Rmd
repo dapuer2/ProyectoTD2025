@@ -75,7 +75,7 @@ Mercadona. Específicamente, se enfocarán en identificar las compras más
 comunes, los supermercados más visitados, los productos más populares y
 que localidad tiene mayor número de tickets entre otras cosas.
 
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE,warning=FALSE}
 
 if (!require("pacman")) {
   install.packages("pacman")
@@ -83,13 +83,13 @@ if (!require("pacman")) {
 
 ```
 
-## 1.1 Carga de librerías necesarias para el análisis
+## 2. Carga de librerías necesarias para el análisis
 
 Inicialmente, se cargan los paquetes necesarios para cada una de las
 fases del proyecto. Para hacerlo de forma más eficiente y ordenada, se
 utiliza el paquete pacman del lenguaje de programación R
 
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE,message=FALSE}
 
 library(pacman)
 
@@ -103,13 +103,17 @@ p_load(
   purrr, # Manipulación de datos
   lubridate, # Manipulación de datos tipo fecha
   hrbrthemes, # Visualización de datos
-  arules # Análisis patrones de compra
+  arules, # Análisis patrones de compra
+  gt,# Para la visualización de tablas
+  flextable,,# Para la visualización de tablas
+  officer,# Para la visualización de tablas
+  scales # Manipulación de gráficas
   )
 ```
 
-## 1.2 Extracción de datos del fichero de texto
+## 3. Extracción de datos del fichero de texto
 
-### 1.2.1 Recopilación de ficheros .txt
+### 3.1 Recopilación de ficheros .txt
 
 Con el propósito de simplificar el procesamiento de los datos contenidos
 en los tickets de Mercadona, se ha optado por utilizar un código en R
@@ -134,7 +138,7 @@ elementos.carpeta <- list.files(path = rutadatos,
 
 ```
 
-### 1.2.2 Recopilación de los datos
+### 3.2 Recopilación de los datos
 
 Una vez que todos los tickets han sido recolectados y transformados en
 texto plano, es momento de almacenar la información contenida en ellos.
@@ -146,7 +150,7 @@ Para ello, hemos realizado 2 data.frames de trabajo:
 -   ***df.productos***: Este data frame recopila la información de cada
     producto comprado y su precio
 
-#### 1.2.2.1 Recogida de datos generales del ticket
+#### 3.2.1 Recogida de datos generales del ticket
 
 Las variables creadas y almacenadas para esta tabla con datos más
 generales es la siguiente:
@@ -296,7 +300,7 @@ precio_total <- as.numeric(gsub(",", ".", precio_total))  # Convierte el precio 
 }
 ```
 
-#### 1.2.2.1 Recogida de datos de los productos del ticket
+#### 3.2.2 Recogida de datos de los productos del ticket
 
 Las variables creadas y almacenadas para la tabla de los productos es
 la siguiente:
@@ -321,7 +325,6 @@ el proyecto en un futuro sea fácil su entendimiento y rápida la puesta
 en marcha.
 
 ```{r, echo= FALSE, message=FALSE, warning=FALSE}
-
 df.productos <- data.frame()
 
 for (d in elementos.carpeta) {
@@ -432,19 +435,113 @@ for (d in elementos.carpeta) {
 # Limpieza final
 df.productos <- df.productos %>%
   filter(!is.na(nombre.producto), !is.na(precio.producto))
+```
 
+Consideramos también la clasificació por categoría de los distintos productos almacenados en el ***df.productos***.
 
+```{r, include=FALSE, message=FALSE, warning=FALSE}
 
+df.productos <- df.productos %>%
+  mutate(categoria = case_when(
+    # FRUTAS Y VERDURAS
+    nombre.producto %in% c("PATATA 3 KG", "TOMATE ENTERO PELADO", "AJO SECO 250 G", 
+                           "CHAMPIÑÓN GRANDE BAN", "MANZANA GOLDEN BOLSA", "ESP VERDE FINO",
+                           "SETA BANDEJA", "CHAMPIÑON PORTOBELLO", "FRESÓN", "AGUACATE BANDEJA",
+                           "MANDARINA", "PLATANO", "ALCACHOFA", "HABAS", "MANDARINA HOJA",
+                           "BURGER BERENJENA", "BANANA", "CALABACIN VERDE", "COLIFLOR",
+                           "JUDÍA PLANA", "KIWI VERDE", "CEBOLLA 2 KG", "RABANITOS",
+                           "CEBOLLA TIERNA", "TOMATE NEGRO", "MANGO", "TOMATE CANARIO", "GARROFON", "TOMATE TRITURADO", "TOMATE TRITURADO", "GUISANTE FINO", "ZANAHORIA BOLSA", "PEPINO", "UVA BLANCA S/SEM") ~ "FRUTAS Y VERDURAS",
+    
+    # PESCADO
+    nombre.producto %in% c("MEJILLON", "PATÉ ATÚN 3X80", "MARINA ALTA", "ALBONDIGAS DE BACALA",
+                           "BERBERECHO", "LOMO BACAL P/S", "ESCALOPIN SALMON", "BACALAO AHUMADO", "TIBURON", "ATÚN CLARO OLIVA PK6
+") ~ "PESCADO",
+    
+    # CARNES Y EMBUTIDOS
+    nombre.producto %in% c("CHULETA AGUJA", "CH. PALO RIÑONAD", "MORCILLA CEB. OREADA",
+                           "1/2 CONEJO TROCEADO", "F. PLANCHA/GUISAR", "CHULETON", "CHORIZO",
+                           "LONGANIZA DE PAYES", "LONGANIZA PASCUA", "EMBUTIDO LONCHEADO",
+                           "SALCHICHÓN BELLOTA", "JAMON CEBO IBERICO", "JAMÓN C FL PACK",
+                           "TACO BACON", "HAMBURGUESA DE LOMO", "ALAS PARTIDAS CERT",
+                           "COSTILLA CARNOSA", "GARRÓN JAMON SERRANO", "SALCHICHON CEBO LONC",
+                           "JAMÓN COCIDO 90%", "CHORIZO PICANTE", "PANCETA", "POLLO ENTERO LIMPIO", "ALBONDIGAS 24 UNID.
+") ~ "CARNES Y EMBUTIDOS",
+    
+    # LÁCTEOS Y QUESOS
+    nombre.producto %in% c("Q VIEJO TOSTADO", "QUESO LONCHAS OVEJA", "LECHE ENTERA P6",
+                           "LCASEI FRESA X", "ACT O% NAT ED", "TARTA QUESO", 
+                           "Q RALLADO FUNDIR", "Q. UNTAR SUAVE", "GRIEGO STRACCIAT.P-6",
+                           "ACT O% NAT ED 8", "NATILLA CHOCOLATE X4", "NATA 15% SIN LACTOSA", "QUESO AÑEJO ROMERO", "Q. VIEJO INTENSO", "Q. RALLADO EMMENTAL", "QUESO RALLADO PIZZA", "QUESO FRESCO CABRA
+", "LECHE DESNAT. CALCIO
+") ~ "LÁCTEOS Y QUESOS",
+    
+    # PANADERÍA Y REPOSTERÍA
+    nombre.producto %in% c("C 0,0 TOSTADA P-6", "PAT. CLASSICAS", "MINI EMP PISTO P6",
+                           "M.CROISS MANTEQUILLA", "PAN 51% INTEGRAL 5UN", "MINI SALADAS",
+                           "GALL.MARIA INTEGRAL", "GALLETA MARIA", "BARRITAS CHIPS AHOY",
+                           "CONOS", "TRIGO SNACKS", "PAN CRISTAL 4 UDS", "PAN REDONDO SEMILLAS") ~ "PANADERÍA Y REPOSTERÍA",
+    
+    # LEGUMBRES Y CEREALES
+    nombre.producto %in% c("GARBANZO M.COCIDO", "ARROZ INTEGRAL", "COPOS DE AVENA",
+                           "QUINOA") ~ "LEGUMBRES Y CEREALES",
+    
+    # FRUTOS SECOS
+    nombre.producto %in% c("AVELLANA TOSTADA", "CACAHUETE SIN SAL", "NUEZ CASCARA NATURAL", "ANACARDO NATURAL") ~ "FRUTOS SECOS",
+    
+    # ALIMENTOS PREPARADOS
+    nombre.producto %in% c("TOFU", "SOJA NATURAL CAJA", "BURGER BERENJENA", 
+                           "PIZZA ATUN BACON", "PIZZA MEDITTERRANEA") ~ "ALIMENTOS PREPARADOS",
+    
+    # BEBIDAS
+    nombre.producto %in% c("C. ESPECIAL BOT", "CERV TOSTADA", "CERV PACK", "RIBERA ROBLE",
+                           "ICE TEA MELOCOTÓN", "CERVEZA", "ISOTÓNICA LIMÓN
+", "CERV. RADLER 0,0", "AGUA MINERAL") ~ "BEBIDAS",
+    
+    # CONDIMENTOS Y SALSAS
+    nombre.producto %in% c("SALSA MIEL Y MOSTAZA", "SALSA AGRIDULCE", "MIEL NARANJO DOSIF.",
+                           "MAYONESA L LIGHT", "VIRGEN EXTRA") ~ "CONDIMENTOS Y SALSAS",
+    
+    # PRODUCTOS DE LIMPIEZA
+    nombre.producto %in% c("LAVAVAJILLAS QUANTUM", "ABRILLANTADOR VAJILL", "LAVAVAJILLA TODO 1",
+                           "LAVAVAJILLA TODO", "LAVAVAJ. TODO EN", "ARIEL CÁPSULAS",
+                           "FAIRY ORIGINAL 870ML", "LIMPIAHOGAR MULTI", "LIMPIADOR MOPAS SPRA",
+                           "SAL LAVAVAJILLAS", "REFILL DERMO", "BARREÑO", "MULTIUSOS", "FRIEGASUELOS PINO") ~ "PRODUCTOS DE LIMPIEZA",
+    
+    # HIGIENE PERSONAL
+    nombre.producto %in% c("TAMPÓN C. PEARL REGU", "ROLLO HOGAR DOBLE", "PAÑUELO CAJA",
+                           "TOA.BEBE FRESCAS", "CHAMPÚ H&S 2 EN", "TOALLITAS ANTITRANSF") ~ "HIGIENE PERSONAL",
+    
+    # OTROS ALIMENTOS
+    nombre.producto %in% c("CAFE MOLIDO NATURAL", "CARAMELO REGALIZ", "PALOMITAS SAL PACK",
+                           "MELOCOTON ALM PACK") ~ "OTROS ALIMENTOS",
+    
+    # PRODUCTOS VARIOS
+    nombre.producto %in% c("GUANTE RESIS.LEJÍA M", "GUANTE FLOCADO PEQU", "PERF.CEJAS MICRO",
+                           "PERF.LABIOS", "PERF.AUT.LAB", "BLUSH SATÍN", "FIT ME", "CORRECTOR HYDRA-VI",
+                           "PERF.AUT.OJOS", "BARRA COLOR BALM", "PERF. OJOS WATER", "BLUE II SLALOM",
+                           "P. COLORCOR") ~ "PRODUCTOS VARIOS",
+    
+    # Para cualquier producto no clasificado
+    TRUE ~ "OTROS"
+  ))
 
 ```
 
-#### 1.2.2.2 Tablas para facilitar la información que contienen los tickets
 
+#### 3.2.3 Tablas para facilitar la información que contienen los tickets
 
-```{r, echo = FALSE, warning=FALSE}
-# Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
+Realizamos las tablas necesarias para realizar un resumen analítico de los datos
+proporcionados por los tickets.
+
+TABLA 1: Resumen general de variables
+
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
+
 
 ## TABLA 1: Resumen general de variables
+
+
+
 resumen_variable <- function(var) {
   tipo <- class(var)[1]
   n_na <- sum(is.na(var))
@@ -474,19 +571,44 @@ resumen_variable <- function(var) {
 
 resumen <- bind_rows(lapply(df.ticket, resumen_variable), .id = "Variable")
 
-knitr::kable(
-  resumen,
-  caption = "Tabla 1. Resumen general de las variables del conjunto de tickets.",
-  digits = 4
-) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+resumen_variables <- resumen %>%
+  mutate(
+    Variable = str_to_title(gsub("\\.", " ", Variable)),
+    tipo = case_when(
+      tipo == "factor" ~ "Categórica",
+      tipo == "character" ~ "Texto",
+      tipo == "numeric" ~ "Numérica",
+      tipo == "Date" ~ "Fecha",
+      tipo == "Period" ~ "Hora",
+      TRUE ~ tipo
+    ),
+    topFrac = scales::percent(topFrac, accuracy = 0.1),
+    missFrac = scales::percent(missFrac, accuracy = 0.1)
+  ) %>%
+  kable(
+    caption = "Resumen General de Variables",
+    booktabs = TRUE,
+    align = c("l", "l", "c", "l", "c", "c", "c"),
+    col.names = c("Variable", "Tipo", "Niveles Ún.", "Valor Más Frec.", 
+                  "Frec.", "% Total", "Faltantes (%)")
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "striped"),
+    full_width = FALSE,
+    font_size = 9
+  )
 
-# La tabla 1 presenta un resumen de las variables contenidas en df.ticket, indicando el tipo, número de niveles (si corresponde), valor más frecuente, su frecuencia relativa y la fracción de valores perdidos.
-
+resumen_variables
 ```
+Vemos como la tabla 1 presenta un resumen de las variables contenidas en df.ticket, indicando el tipo, número de niveles (si corresponde), valor más frecuente, su frecuencia relativa y la fracción de valores perdidos.
 
-```{r, echo = FALSE}
+
+TABLA 2: Estadísticos de variables numéricas
+
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
 ## TABLA 2: Estadísticos de variables numéricas
+
+
 numericas <- df.ticket %>%
   select(where(is.numeric)) %>%
   summarise(across(
@@ -502,20 +624,46 @@ numericas <- df.ticket %>%
   )) %>%
   pivot_longer(cols = everything(),
                names_to = c("Variable", ".value"),
-               names_sep = "_")
+               names_sep = "_") %>%
+  mutate(
+    Variable = str_to_title(gsub("\\.", " ", Variable)),
+    across(where(is.numeric), round, 2)
+  ) %>%
+  gt() %>%
+  tab_header(
+    title = "Estadísticos Descriptivos de Variables Cuantitativas",
+    subtitle = "Tabla 2"
+  ) %>%
+  cols_label(
+    Variable = "Variable",
+    Media = "Media",
+    Mediana = "Mediana",
+    DesvEst = "Desv. Est.",
+    Min = "Mínimo",
+    Max = "Máximo"
+  ) %>%
+  fmt_number(columns = where(is.numeric), decimals = 2) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) %>%
+  tab_options(
+    table.width = pct(100),
+    table.font.size = px(12),
+    data_row.padding = px(6)
+  )
 
-knitr::kable(
-  numericas,
-  caption = "Tabla 2. Estadísticos descriptivos de las variables numéricas.",
-  digits = 2
-) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+numericas
 
-# En la tabla 2 se muestran los principales estadísticos descriptivos de las variables cuantitativas como el precio total del ticket, el IVA añadido y el precio sin IVA.
 ```
+Observamos como en la tabla 2 se muestran los principales estadísticos descriptivos de las variables cuantitativas como el precio total del ticket, el IVA añadido y el precio sin IVA.
 
-```{r, echo = FALSE}
+TABLA 3: Frecuencias de variables categóricas clave
+
+```{r, echo= FALSE, message=FALSE, warning=FALSE}
 ## TABLA 3: Frecuencias de variables categóricas clave
+
+
 categoricas <- df.ticket %>%
   select_if(~ is.factor(.) || is.character(.)) %>%
   select(ciudad, metodo.pago, numero.centro) %>%
@@ -526,17 +674,47 @@ categoricas <- df.ticket %>%
   arrange(desc(Frecuencia), .by_group = TRUE) %>%
   slice_head(n = 5)  # top 5 por categoría
 
-knitr::kable(
-  categoricas,
-  caption = "Tabla 3. Frecuencia de los valores más comunes en variables categóricas clave.",
-  digits = 0
-) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+categoricas <- categoricas %>%
+  mutate(
+    Variable = case_when(
+      Variable == "ciudad" ~ "Ciudad",
+      Variable == "metodo.pago" ~ "Método de Pago",
+      Variable == "numero.centro" ~ "Número de Centro"
+    ),
+    Valor = as.character(Valor),
+    Frecuencia = as.integer(Frecuencia),
+    Porcentaje = percent(Frecuencia/sum(Frecuencia), accuracy = 0.1)
+  ) %>%
+  flextable() %>%
+  set_header_labels(
+    Variable = "Variable",
+    Valor = "Valor",
+    Frecuencia = "Frecuencia",
+    Porcentaje = "Porcentaje"
+  ) %>%
+  add_header_row(
+    values = c("Frecuencia de Valores en Variables Categóricas"),
+    colwidths = 4
+  ) %>%
+  merge_v(j = "Variable") %>%
+  theme_zebra() %>%
+  fontsize(size = 11, part = "all") %>%
+  padding(padding = 4, part = "all") %>%
+  align(align = "center", part = "header") %>%
+  align(align = "left", j = 2, part = "body") %>%
+  align(align = "right", j = c(3,4), part = "body") %>%
+  width(width = c(1.2, 2.5, 1.2, 1.2)) %>%
+  bg(j = "Variable", bg = "#f7f7f7", part = "body") %>%
+  color(color = "#333333", part = "all") %>%
+  bold(part = "header") %>%
+  set_table_properties(layout = "autofit")
 
-# La tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
+categoricas
 ```
 
-## 1.3 Preguntas propuestas
+Visualizamos como la tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
+
+## 3. Preguntas propuestas
 
 -   Estas son las preguntas que tenemos que responder mediante el uso de
     gráficos:
@@ -558,47 +736,49 @@ ggplot(top9,aes(x=nombre.producto,y=Unidades_Vendidas))+
   )+theme_minimal()+theme(axis.text.x=element_text(angle=45,hjust=1,size=10))# Usamos element_text para ajustar los nombres de los productos que estan en el eje X
 ```
 
-En esta gráfica podemos observar los productos más vendidos por unidades. El producto con mayor número de ventas es la leche desnatada sin lactosa, con 24 unidades, seguido de las lonchas de queso de cabra con 20. También destacan productos como los yogures Activia, los copos de avena o la barra de pan campesina. Aunque el título indica un Top 5, se han incluido más productos para ofrecer una visión más completa del comportamiento de ventas. Este análisis permite identificar los productos más demandados.
+
 
 
     2)  Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son
         los 5 productos más vendidos?¿Cuántos kilos se han vendido de
         cada uno de estos productos?
         
-```{r,echo=FALSE,fig.align="center"}
-# 1) Definimos un vector con todas las frutas y verduras registradas:
+```{r,echo=FALSE,fig.align="center",mess}
 
-frutas_verduras = c(
-    "ROJA ACIDULCE BOLSA",        # probablemente manzana o similar
-    "BURGER BERENJENA",           # berenjena
-    "PATATA 3 KG",                # patata
-    "TOMATE ENTERO PELADO",       # tomate
-    "AJO SECO 250 G",             # ajo
-    "CHAMPIÑÓN GRANDE BAN",       # champiñón
-    "NUEZ CASCARA NATURAL",       # nuez
-    "MANZANA GOLDEN BOLSA",       # manzana
-    "ESP VERDE FINO",             # espárrago
-    "SETA BANDEJA",               # seta
-    "CHAMPIÑON PORTOBELLO",       # champiñón
-    "FRESÓN",                     # fresón
-    "AGUACATE BANDEJA",           # aguacate
-    "GARROFON",
-    "AJOS TIERNOS",
-    "TOMATE TRITURADO"
-    )
-
-# 2) Iniciamos la búsqueda de los 5 productos de la categoría de FRUTAS Y 
+# 1) Iniciamos la búsqueda de los 5 productos de la categoría de FRUTAS Y 
 #    VERDURAS más vendidos, y el cálculo de los kilos vendidos de cada uno de 
 #    ellos:
 
-df.productos %>%
-  filter(nombre.producto %in% frutas_verduras) %>% # filtramos los productos
+top_frutas_verduras <- df.productos %>%
+  filter(categoria == "FRUTAS Y VERDURAS") %>% # filtramos los productos
   group_by(nombre.producto) %>% # agrupamos los datos por nombre de producto
   summarise(kilos_vendidos = sum(cantidad, na.rm = TRUE)) %>% # sumamos la cantidad por producto, ignorando NAs
   arrange(desc(kilos_vendidos)) %>% # ordenamos los productos de mayor a menor cantidad
   slice_head(n = 5) # seleccionamos los 5 productos con más cantidad
+```
+
+```{r, echo = FALSE}
+
+# 2) Representación gráfica:
+
+ggplot(top_frutas_verduras, aes(x = reorder(nombre.producto, -kilos_vendidos), 
+                               y = kilos_vendidos)) +
+  geom_col(fill = "#E0B0FF", width = 0.7) +
+  geom_text(aes(label = kilos_vendidos), 
+            position = position_dodge(width = 0.9), 
+            vjust = -0.5, 
+            size = 4,
+            fontface = "bold") +
+  labs(title = "TOP 5 - Frutas y verduras más vendidas",
+       subtitle = "Cantidad vendida en kilos",
+       x = "",
+       y = "Kilos vendidos") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1, size = 10)) +
+  scale_y_continuous(limits = c(0, max(top_frutas_verduras$kilos_vendidos) * 1.2))
 
 ```
+
         
 
     3)  Si consideramos la categoría de PESCADO. Cuáles son los 5
@@ -635,9 +815,7 @@ En la grafica podemos observar los productos mas vendidos de la categoria pescad
         por kilo de las bananas y los plátanos en los tickets
         disponibles, a lo largo del tiempo.
 
-```{r}
-# Visualizando los datos en el data frame en el cual se encuentra cada uno de los productos, no hemos encontrado ninguna compra de platanos o bananas o algo que haga referencia a ellos. Por este motivo, ha sido imposible llevar a cabo una representaciñon de la evolución del kilo de bananas y platanos a lo largo del tiempo. No obstante, este es el código que se debería utilizar en el caso de que si que se hubieran llevado a cabo compras de estos productos.
-
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
 # 1) Filtramos los productos Banana y Plátano
 frutas <- df.productos %>%
   filter(nombre.producto %in% c("BANANA", "PLATANO CANARIO",""))
@@ -747,16 +925,27 @@ ggplot(df.ticket,aes(x=precio.total)) +
  theme_minimal()
 ```
 A partir de esta gráfica se puede ver que  la media da 46,31€ pese a que la mayoria de las compras sean mas baratas debido a algunas compras muy grandes que han habido en nustro conjunto de datos 
+
     9)  ¿Cuanto dinero se suele añadir con el IVA?
     
 ```{r,echo=FALSE,fig.align="center"}
 # Debemos calcular el valor medio de la columna "iva.anayadido":
 
-df.ticket %>%
+iva_medio <- df.ticket %>%
   summarise(iva_promedio = mean(iva_anyadido, na.rm = TRUE))
 
 ## NO consideramos los valores NA (faltantes)
 
+# Representación:
+
+ggplot(iva_medio, aes(x = 1, y = iva_promedio)) +
+  geom_text(aes(label = paste0("IVA Promedio: ", round(iva_promedio, 2), " €")),
+            size = 8, fontface = "bold", color = "#2E86C1") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#EAF2F8", color = NA),
+    plot.margin = margin(40, 40, 40, 40)
+  )
 ```
     
 
@@ -841,28 +1030,36 @@ ggplot(productos_rango1, aes(x = precio.producto,
   theme_minimal()
 ```
 
-```{r,fig.align="center",echo=FALSE}
-# Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
-productos_rango1 <- df.productos[df.productos$precio.producto >= 12.50 & 
-                                         df.productos$precio.producto <= 15, ]
-
-productos_rango1 = head(productos_rango1,-2)
-
-# Creamos un gráfico de barras horizontales para mostrar los productos en el 
-#rango de precios especificado
-ggplot(productos_rango1, aes(x = precio.producto, 
-                            y = reorder(nombre.producto, precio.producto))) +
-  geom_bar(stat = "identity", fill = "#FF6F61") +  # Cambiamos el color de las barras
-  geom_text(aes(label = sprintf("%.0f", precio.producto)),
-            hjust = -0.2, color = "black") +  # Agregamos etiquetas con el precio
-  labs(title = "Productos más caros",
-       x = "Precio",
-       y = "Producto",
-       subtitle = "Cantidad de productos y su precio") +  # Añadimos subtítulo
-  theme_minimal()
-```
-
 
 Por tanto, como podemos observar el alimento comprado más caro es el
 bogavante crudo el cual solo se ha comprado 1 vez, el cual su precio es
 de casi 15€.
+
+## 4. Conclusiones
+
+Para concluir, nos gustaría expresar los beneficios que nos ha supuesto realizar este trabajo.
+La resolución de las preguntas planteadas sobre los tickets de Mercadona y la extracción de las
+variables que tiene cada ticket nos han ayudado a saber más acerca de Mercadona, ya sean los producto 
+más vendidos en diferentes categorías (fruta, pescado), la hora de más afluencia de gente comprando, 
+el dinero de media que se gastan los compradores...
+
+Este proyecto ha sido fundamental para ampliar nuestro conocimiento sobre el conjunto de datos. Además,
+hemos adquirido experiencia en la resolución de los desafíos comunes que surgen al trabajar con datos.
+Esta experiencia nos ha permitido comprender mejor las complejidades involucradas en el análisis de 
+datos y cómo abordarlas de manera efectiva en futuros proyectos.
+
+Este proyecto ha sido de suma importancia, ya que nos ha proporcionado la invaluable experiencia de 
+abordar una problemática desde cero, trabajando con datos y extrayendo conclusiones significativas. 
+
+Es importante señalar que los resultados de este proyecto deben ser interpretados con precaución debido
+a la limitada cantidad de datos disponibles. En estudios similares, se suelen analizar millones de tickets
+electrónicos para obtener conclusiones más sólidas y representativas de los hábitos de compra. 
+
+Este proyecto ha sido una oportunidad invaluable para mejorar nuestras habilidades de trabajo en equipo.
+Durante el proceso, hemos enfrentado decisiones conjuntas que han fortalecido nuestra colaboración y 
+capacidad para trabajar de manera efectiva como grupo. Estas experiencias seguramente nos serán útiles 
+en futuros proyectos, donde la capacidad de tomar decisiones en equipo juega un papel crucial en el éxito 
+general del trabajo.
+
+En definitiva, este trabajo nos ha servido para mejorar en valores y para iniciarnos en el mundo de 
+los datos y su análisis.
