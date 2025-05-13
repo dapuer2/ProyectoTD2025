@@ -1,12 +1,12 @@
 ---
 title: "ProyectoTD2025    -    Grupo C"
 author: "Alexandra Alfonso, Alberto Cabedo, Javier Marzo, Iker Pérez, David Puertes y Julio Sierra"
-date: "2025-04-08"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 5
+  html_document:
+    echo: true
     number_sections: false
+    theme: lumen
+    toc: true
   html_notebook:
     echo: true
     number_sections: true
@@ -15,11 +15,10 @@ output:
     toc: true
     toc_depth: 5
     number_sections: false
-  html_document:
-    echo: true
-    number_sections: false
-    theme: lumen
+  pdf_document:
     toc: true
+    toc_depth: 5
+    number_sections: false
   bookdown::html_document2:
     echo: true
     number_sections: false
@@ -722,7 +721,7 @@ Visualizamos como la tabla 3 muestra las frecuencias más altas de tres variable
 
     1)  ¿Cuáles son los 5 productos, de los vendidos por unidades, con
         más ventas? ¿Cuántas unidades de cada uno se han vendido?
-```{r,echo=FALSE, grafico, fig.width=6, fig.height=4,fig.align="center"}
+```{r,echo=FALSE, grafico, fig.width=4, fig.height=3.4, out.width="70%", fig.align="center"}
 top_productos<-df.productos%>%
   group_by(nombre.producto)%>%# Primero agrupamos por los productos
   summarise(Unidades_Vendidas=sum(cantidad))%>%# Sumamos la cantidad de cada cantidad
@@ -757,7 +756,7 @@ top_frutas_verduras <- df.productos %>%
   slice_head(n = 5) # seleccionamos los 5 productos con más cantidad
 ```
 
-```{r, echo = FALSE,grafico2, fig.width=6, fig.height=4,fig.align="center"}
+```{r, echo = FALSE,grafico2, fig.width=7, fig.height=2.7,fig.align="center"}
 
 # 2) Representación gráfica:
 
@@ -785,7 +784,7 @@ ggplot(top_frutas_verduras, aes(x = reorder(nombre.producto, -kilos_vendidos),
         productos más vendidos? ¿Cuántos kilos se han vendido de cada
         uno de estos productos ?
         
-```{r,echo=FALSE,grafico3, fig.width=6, fig.height=4,fig.align="center"}
+```{r,echo=FALSE,grafico3, fig.width=6, fig.height=2.7,fig.align="center", out.width="70%"}
 
 # 1) Filtramos los productos de la categoría PESCADO, agrupamos por producto y sumamos el total de kilos vendidos
 top_pescado <- df.productos %>%
@@ -812,7 +811,7 @@ El diagrama indica que el mejillón es el producto más comercializado en la cat
         por kilo de las bananas y los plátanos en los tickets
         disponibles, a lo largo del tiempo.
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,grafico4,fig.width=6, fig.height=4,fig.align="center"}
+```{r, echo=FALSE,message=FALSE,warning=FALSE,grafico4,fig.width=5, fig.height=3,fig.align="center"}
 # 1) Filtramos los productos Banana y Plátano
 frutas <- df.productos %>%
   filter(nombre.producto %in% c("BANANA", "PLATANO"))
@@ -834,7 +833,7 @@ El diagrama ilustra el cambio en el costo por kilogramo de bananas y plátanos d
 
     5)  ¿Cuál es la procedencia de los tickets ?¿Qué ciudad/pueblo tiene
         un mayor número de tickets?
-```{r,fig.align="center",echo=FALSE,grafico5, fig.width=6, fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico5, fig.width=7.7, fig.height=2}
 # Gráfico de ciudades con mayor número de tickets
 ciudades_top <- df.ticket %>%
   count(ciudad) %>%
@@ -856,7 +855,7 @@ Valencia claramente lidera con 130 tickets. Alboraya aparece en segundo lugar co
     6)  Muestra mediante un diagrama el número de tickets recogidos cada
         día de las semana. ¿Si tuvieses que cerrar un día entre semana
         qué día lo harías?
-```{r,fig.align="center",echo=FALSE,grafico6,fig.width=6,fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico6,fig.width=4,fig.height=2}
 # Análisis de tickets por día de la semana
 tickets_dia_semana <- df.ticket %>%
   mutate(dia_semana = wday(fecha, label = TRUE, week_start = 1, abbr = FALSE)) %>%
@@ -879,7 +878,7 @@ ggplot(tickets_dia_semana, aes(x = dia_semana, y = n, fill = dia_semana)) +
 
     7)  ¿Existe algún patrón en cuanto a la hora del día en que se
         realizan las compras?
-```{r,fig.align="center",echo=FALSE,grafico7,fig.width=6,fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico7,fig.width=5,fig.height=4}
 tickets_hora<-df.ticket%>%
   mutate(hora_compra=hour(hora))%>%
   count(hora_compra)%>%
@@ -904,7 +903,7 @@ ggplot(tickets_hora,aes(x=hora_compra, y=n, fill=n)) +
 Las horas a las que mas compras hay es justo antes de cenar, donde la gente vuelve del trabajo y baja a comprar la cena y donde menos hay es por la mañana, a la hora de comer y a la hora de cenar, lo que tiene sentido ya que están comprando lo que van a necesitar para preparar su comida o su cena         
 
     8)  ¿Cuánto dinero de media se gastan los compradores?
-```{r,fig.align="center",echo=FALSE,grafico8,fig.width=6,fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico8,fig.width=4,fig.height=3}
 gasto_medio<-df.ticket %>%
   summarise(gasto_promedio=mean(precio.total,na.rm=TRUE)) %>%
   pull(gasto_promedio)
@@ -925,7 +924,7 @@ A partir de esta gráfica se puede ver que  la media da 46,31€ pese a que la m
 
     9)  ¿Cuanto dinero se suele añadir con el IVA?
     
-```{r,echo=FALSE,fig.align="center",grafico9,fig.width=6,fig.height=4}
+```{r,echo=FALSE,fig.align="center",grafico9,fig.width=5,fig.height=1.5}
 # Debemos calcular el valor medio de la columna "iva.anayadido":
 
 iva_medio <- df.ticket %>%
@@ -948,7 +947,7 @@ ggplot(iva_medio, aes(x = 1, y = iva_promedio)) +
 
     10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección
         tienda)
-```{r,fig.align="center",echo=FALSE,grafico10,fig.width=6,fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico10,fig.width=6,fig.height=5}
 df.ticket%>%
   count(direccion,sort=TRUE) %>% # Utilizamos count para contar las veces que aparece cada tienda
   ggplot(aes(x=direccion, y=n))+
@@ -969,7 +968,7 @@ diferentes, podemos optar por agrupar los productos por rangos de
 precios y mostrar cuántos hay en cada rango. Esto genera una visión
 general de la distribución de precios de los productos.
 
-```{r,fig.align="center",echo=FALSE,grafico11,fig.width=6,fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico11,fig.width=4,fig.height=2}
 
 # Filtramos los productos con precios entre 0 y 15€ (ya que mayores a este precio su precio no es el real, la importación de esos precios no esta correcta,ente)
 df_filtrado <- subset(df.productos, precio.producto >= 0 & precio.producto <= 15)
@@ -1005,7 +1004,7 @@ entre 12 y 15 euros y representarlos en un gráfico, primero filtraremos
 el dataframe original para incluir solo los productos dentro de ese
 rango y luego mostraremos esos productos en un gráfico.
 
-```{r,fig.align="center",echo=FALSE,grafico12,fig.width=6,fig.height=4}
+```{r,fig.align="center",echo=FALSE,grafico12,fig.width=6,fig.height=2}
 # Filtramos el dataframe para incluir solo los productos dentro del rango de precios especificado
 productos_rango1 <- df.productos[df.productos$precio.producto >= 12.50 & 
                                          df.productos$precio.producto <= 15, ]
