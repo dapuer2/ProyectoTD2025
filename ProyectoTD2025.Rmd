@@ -344,7 +344,6 @@ for (d in elementos.carpeta) {
       fin_productos <- grep("TARJETA BANCARIA", contenido) - 1
     }
   }
-  
   productos <- contenido[inicio_productos:fin_productos]
   productos <- trimws(productos)
   productos <- productos[productos != ""]
