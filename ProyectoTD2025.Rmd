@@ -924,7 +924,7 @@ A partir de esta gráfica se puede ver que  la media da 46,31€ pese a que la m
 
     9)  ¿Cuanto dinero se suele añadir con el IVA?
     
-```{r,echo=FALSE,fig.align="center",grafico9,fig.width=5,fig.height=1.5}
+```{r,echo=FALSE,fig.align="center",grafico9,fig.width=5,fig.height=1.5,warning=FALSE}
 # Debemos calcular el valor medio de la columna "iva.anayadido":
 
 iva_medio <- df.ticket %>%
@@ -934,22 +934,24 @@ iva_medio <- df.ticket %>%
 
 # Representación:
 
-ggplot(iva_medio, aes(x = 1, y = iva_promedio)) +
-  geom_text(aes(label = paste0("IVA Promedio: ", round(iva_promedio, 2), " €")),
-            size = 8, fontface = "bold", color = "#2E86C1") +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "#EAF2F8", color = NA),
-    plot.margin = margin(40, 40, 40, 40)
+ggplot(df.ticket,aes(x=1,y=iva_anyadido)) +
+  geom_jitter(width=0.2,alpha=0.4,color="skyblue",size=2) +
+  geom_hline(yintercept=iva_medio$iva_promedio,color="darkred",linetype="dashed",size=1)+
+  labs(title = "Valores de IVA por ticket",y = "IVA (€)",x = NULL) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank()
   )
 ```
     
 
     10) ¿Cuál es la tienda en la que más se ha comprado? (Dirección
         tienda)
-```{r,fig.align="center",echo=FALSE,grafico10,fig.width=6,fig.height=5}
+```{r,fig.align="center",echo=FALSE,grafico10,fig.width=6,fig.height=2}
+
+
 df.ticket%>%
-  count(direccion,sort=TRUE) %>% # Utilizamos count para contar las veces que aparece cada tienda
+  count(direccion,sort=TRUE) %>%
+  slice_max(n, n = 5) %>% # Utilizamos count para contar las veces que aparece cada tienda
   ggplot(aes(x=direccion, y=n))+
   geom_col(fill="steelblue") +
   coord_flip()+  # gira para barras horizontales
