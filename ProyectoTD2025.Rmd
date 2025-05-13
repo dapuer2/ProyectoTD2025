@@ -527,11 +527,17 @@ df.productos <- df.productos %>%
 
 #### 3.2.3 Tablas para facilitar la información que contienen los tickets
 
+Realizamos las tablas necesarias para realizar un resumen analítico de los datos
+proporcionados por los tickets.
+
+TABLA 1: Resumen general de variables
 
 ```{r, echo = FALSE}
-# Realizamos las tablas necesarias para visualizar el análisis llevado a cabo:
 
 ## TABLA 1: Resumen general de variables
+library(gt)
+library(scales)
+
 resumen_variable <- function(var) {
   tipo <- class(var)[1]
   n_na <- sum(is.na(var))
@@ -561,19 +567,57 @@ resumen_variable <- function(var) {
 
 resumen <- bind_rows(lapply(df.ticket, resumen_variable), .id = "Variable")
 
-knitr::kable(
-  resumen,
-  caption = "Tabla 1. Resumen general de las variables del conjunto de tickets.",
-  digits = 4
-) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+resumen_variables <- resumen %>%
+  mutate(
+    Variable = str_to_title(gsub("\\.", " ", Variable)),
+    tipo = case_when(
+      tipo == "factor" ~ "Categórica",
+      tipo == "character" ~ "Texto",
+      tipo == "numeric" ~ "Numérica",
+      tipo == "Date" ~ "Fecha",
+      tipo == "Period" ~ "Hora",
+      TRUE ~ tipo
+    ),
+    topFrac = percent(topFrac, accuracy = 0.1),
+    missFrac = percent(missFrac, accuracy = 0.1)
+  ) %>%
+  gt() %>%
+  tab_header(
+    title = "Resumen General de Variables",
+    subtitle = "Análisis descriptivo de las variables en los tickets"
+  ) %>%
+  cols_label(
+    Variable = "Variable",
+    tipo = "Tipo",
+    niveles = "Niveles Únicos",
+    topLevel = "Valor Más Frecuente",
+    topCount = "Frecuencia",
+    topFrac = "% del Total",
+    missFrac = "Valores Faltantes"
+  ) %>%
+  fmt_missing(columns = everything(), missing_text = "-") %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) %>%
+  tab_options(
+    table.width = pct(100),
+    table.font.size = px(12),
+    data_row.padding = px(6)
+  ) %>%
+  tab_source_note("Fuente: Análisis de tickets electrónicos de Mercadona")
 
-# La tabla 1 presenta un resumen de las variables contenidas en df.ticket, indicando el tipo, número de niveles (si corresponde), valor más frecuente, su frecuencia relativa y la fracción de valores perdidos.
-
+resumen_variables
 ```
+Vemos como la tabla 1 presenta un resumen de las variables contenidas en df.ticket, indicando el tipo, número de niveles (si corresponde), valor más frecuente, su frecuencia relativa y la fracción de valores perdidos.
 
-```{r, echo = FALSE}
+
+TABLA 2: Estadísticos de variables numéricas
+
+```{r}
 ## TABLA 2: Estadísticos de variables numéricas
+library(reactable)
+
 numericas <- df.ticket %>%
   select(where(is.numeric)) %>%
   summarise(across(
@@ -591,18 +635,49 @@ numericas <- df.ticket %>%
                names_to = c("Variable", ".value"),
                names_sep = "_")
 
-knitr::kable(
-  numericas,
-  caption = "Tabla 2. Estadísticos descriptivos de las variables numéricas.",
-  digits = 2
-) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+numericas <- numericas %>%
+  mutate(
+    Variable = str_to_title(gsub("\\.", " ", Variable)),
+    across(where(is.numeric), ~round(., 2))
+  ) %>%
+  reactable(
+    columns = list(
+      Variable = colDef(name = "Variable"),
+      Media = colDef(name = "Media", format = colFormat(separators = TRUE, digits = 2)),
+      Mediana = colDef(name = "Mediana", format = colFormat(separators = TRUE, digits = 2)),
+      DesvEst = colDef(name = "Desv. Est.", format = colFormat(separators = TRUE, digits = 2)),
+      Min = colDef(name = "Mínimo", format = colFormat(separators = TRUE, digits = 2)),
+      Max = colDef(name = "Máximo", format = colFormat(separators = TRUE, digits = 2))
+    ),
+    defaultPageSize = 5,
+    searchable = TRUE,
+    bordered = TRUE,
+    highlight = TRUE,
+    striped = TRUE,
+    defaultColDef = colDef(
+      headerStyle = list(background = "#f7f7f8", fontWeight = "bold")
+    ),
+    theme = reactableTheme(
+      borderColor = "#dfe2e5",
+      stripedColor = "#f6f8fa",
+      highlightColor = "#e6f7ff",
+      cellPadding = "8px 12px"
+    ),
+    fullWidth = TRUE,
+    defaultSorted = "Variable"
+  )
 
-# En la tabla 2 se muestran los principales estadísticos descriptivos de las variables cuantitativas como el precio total del ticket, el IVA añadido y el precio sin IVA.
+numericas_react
 ```
+Observamos como en la tabla 2 se muestran los principales estadísticos descriptivos de las variables cuantitativas como el precio total del ticket, el IVA añadido y el precio sin IVA.
 
-```{r, echo = FALSE}
+TABLA 3: Frecuencias de variables categóricas clave
+
+```{r}
 ## TABLA 3: Frecuencias de variables categóricas clave
+library(flextable)
+library(officer)
+
 categoricas <- df.ticket %>%
   select_if(~ is.factor(.) || is.character(.)) %>%
   select(ciudad, metodo.pago, numero.centro) %>%
@@ -613,15 +688,45 @@ categoricas <- df.ticket %>%
   arrange(desc(Frecuencia), .by_group = TRUE) %>%
   slice_head(n = 5)  # top 5 por categoría
 
-knitr::kable(
-  categoricas,
-  caption = "Tabla 3. Frecuencia de los valores más comunes en variables categóricas clave.",
-  digits = 0
-) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+categoricas <- categoricas %>%
+  mutate(
+    Variable = case_when(
+      Variable == "ciudad" ~ "Ciudad",
+      Variable == "metodo.pago" ~ "Método de Pago",
+      Variable == "numero.centro" ~ "Número de Centro"
+    ),
+    Valor = as.character(Valor),
+    Frecuencia = as.integer(Frecuencia),
+    Porcentaje = percent(Frecuencia/sum(Frecuencia), accuracy = 0.1)
+  ) %>%
+  flextable() %>%
+  set_header_labels(
+    Variable = "Variable",
+    Valor = "Valor",
+    Frecuencia = "Frecuencia",
+    Porcentaje = "Porcentaje"
+  ) %>%
+  add_header_row(
+    values = c("Frecuencia de Valores en Variables Categóricas"),
+    colwidths = 4
+  ) %>%
+  merge_v(j = "Variable") %>%
+  theme_zebra() %>%
+  fontsize(size = 11, part = "all") %>%
+  padding(padding = 4, part = "all") %>%
+  align(align = "center", part = "header") %>%
+  align(align = "left", j = 2, part = "body") %>%
+  align(align = "right", j = c(3,4), part = "body") %>%
+  width(width = c(1.2, 2.5, 1.2, 1.2)) %>%
+  bg(j = "Variable", bg = "#f7f7f7", part = "body") %>%
+  color(color = "#333333", part = "all") %>%
+  bold(part = "header") %>%
+  set_table_properties(layout = "autofit")
 
-# La tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
+categoricas
 ```
+
+Visualizamos como la tabla 3 muestra las frecuencias más altas de tres variables categóricas clave: ciudad, método de pago y número de centro, lo que permite comenzar a observar patrones interesantes en los tickets.
 
 ## 3. Preguntas propuestas
 
